@@ -832,6 +832,9 @@ def main():
     except NameError:
         st.error("Variabel 'df_p' tidak ditemukan. Pastikan data performance sudah di-load di awal file.")
         return
+    
+    st.sidebar.markdown("---")
+
     st.sidebar.markdown("""
     <a href="https://shopper-insight.streamlit.app//" target="_blank">
         <button style="

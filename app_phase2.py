@@ -2,17 +2,6 @@ import streamlit as st
 
 st.markdown("""
 <style>
-/* Default tetap normal */
-html {
-    zoom: 100%;
-}
-
-/* Jika lebar layar <= 1366px (laptop 13-14 inch) */
-@media screen and (max-width: 1366px) {
-    html {
-        zoom: 75%;
-    }
-}
 /* Sticky first column for dataframe */
 div[data-testid="stDataFrame"] table {
     border-collapse: separate !important;

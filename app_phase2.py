@@ -1001,6 +1001,35 @@ def render_category_promo_share_chart(df):
     )
 
     st.plotly_chart(fig, use_container_width=True)
+def normalize_brand_columns(df):
+    """
+    Auto-detect dan mapping kolom brand menjadi brand_a & brand_b
+    Tahan terhadap berbagai variasi nama kolom:
+    brand a, brand_before, brand-A, brand1, dll
+    """
+    df = df.copy()
+    df.columns = df.columns.str.strip().str.lower()
+
+    # Ambil semua kolom yang mengandung kata 'brand'
+    brand_cols = [c for c in df.columns if "brand" in c]
+
+    # Jika minimal ada 2 kolom brand → mapping otomatis
+    if len(brand_cols) >= 2:
+        df = df.rename(columns={
+            brand_cols[0]: "brand_a",
+            brand_cols[1]: "brand_b"
+        })
+    else:
+        st.error(f"Kolom brand tidak cukup ditemukan! Kolom tersedia: {df.columns.tolist()}")
+        st.stop()
+
+    # Validasi final
+    required_cols = {"brand_a", "brand_b"}
+    if not required_cols.issubset(df.columns):
+        st.error(f"Kolom brand_a & brand_b gagal dibentuk! Kolom tersedia: {df.columns.tolist()}")
+        st.stop()
+
+    return df
 
 def main():
     global df_p 
@@ -1614,43 +1643,10 @@ def main():
                 df_bc = aff["brand_cat"].copy()
                 df_f = filter_affinity_base(df_bc, sel_sec_aff, sel_plano)
 
-                # 🔧 NORMALISASI KOLOM
-                df_f.columns = df_f.columns.str.strip().str.lower()
+                # 🔥 NORMALISASI BRAND OTOMATIS
+                df_f = normalize_brand_columns(df_f)
 
-                # NORMALISASI NAMA KOLOM BRAND
-                rename_map = {}
-
-                for col in df_f.columns:
-                    c = col.lower().replace(" ", "").replace("-", "").replace(".", "")
-                    
-                    if c in ["branda", "brandbefore", "brand_a"]:
-                        rename_map[col] = "brand_a"
-                    elif c in ["brandb", "brandafter", "brand_b"]:
-                        rename_map[col] = "brand_b"
-
-                df_f = df_f.rename(columns=rename_map)
-
-                df_f.columns = df_f.columns.str.strip().str.lower()
-
-                brand_cols = [c for c in df_f.columns if "brand" in c]
-
-                if len(brand_cols) >= 2:
-                    # Ambil 2 kolom pertama yang mengandung kata brand
-                    df_f = df_f.rename(columns={
-                        brand_cols[0]: "brand_a",
-                        brand_cols[1]: "brand_b"
-                    })
-                else:
-                    st.error(f"Kolom brand tidak cukup ditemukan! Kolom tersedia: {df_f.columns.tolist()}")
-                    st.stop()
-
-                # VALIDASI ULANG
-                required_cols = {"brand_a", "brand_b"}
-                if not required_cols.issubset(df_f.columns):
-                    st.error(f"Kolom tidak ditemukan! Kolom tersedia: {df_f.columns.tolist()}")
-                    st.stop()
-
-                # ✅ AMAN DIPAKAI
+                # Validasi isi brand
                 valid_brand = set(
                     pd.concat([df_f["brand_a"], df_f["brand_b"]])
                     .astype(str)
@@ -1680,30 +1676,8 @@ def main():
                 df_bs = aff["brand_sub"].copy()
                 df_f = filter_affinity_base(df_bs, sel_sec_aff, sel_plano)
 
-                # 🔧 NORMALISASI KOLOM
-                # ==============================
-                # AUTO DETECT BRAND A & BRAND B
-                # ==============================
-
-                df_f.columns = df_f.columns.str.strip().str.lower()
-
-                brand_cols = [c for c in df_f.columns if "brand" in c]
-
-                if len(brand_cols) >= 2:
-                    # Ambil 2 kolom pertama yang mengandung kata brand
-                    df_f = df_f.rename(columns={
-                        brand_cols[0]: "brand_a",
-                        brand_cols[1]: "brand_b"
-                    })
-                else:
-                    st.error(f"Kolom brand tidak cukup ditemukan! Kolom tersedia: {df_f.columns.tolist()}")
-                    st.stop()
-
-                # VALIDASI ULANG
-                required_cols = {"brand_a", "brand_b"}
-                if not required_cols.issubset(df_f.columns):
-                    st.error(f"Kolom tidak ditemukan! Kolom tersedia: {df_f.columns.tolist()}")
-                    st.stop()
+                # 🔥 NORMALISASI BRAND OTOMATIS
+                df_f = normalize_brand_columns(df_f)
 
                 valid_brand = set(
                     pd.concat([df_f["brand_a"], df_f["brand_b"]])

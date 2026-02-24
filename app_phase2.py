@@ -50,7 +50,7 @@ import os
 
 pd.set_option("styler.render.max_elements", 1000000) 
 st.set_page_config(layout="wide", page_title="SHOPPER INSIGHT", page_icon="📊")
-st.markdown(f"**Phase 2**) 
+st.markdown(f"**PHASE 2**")
 
 # --- CUSTOM CSS (SIDEBAR, TABS, & AFFINITY DARK MODE) ---
 # --- CUSTOM CSS (SIDEBAR, TABS, & AFFINITY DARK MODE) ---

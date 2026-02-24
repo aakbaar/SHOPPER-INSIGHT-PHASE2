@@ -1630,6 +1630,20 @@ def main():
 
                 df_f = df_f.rename(columns=rename_map)
 
+                df_f.columns = df_f.columns.str.strip().str.lower()
+
+                brand_cols = [c for c in df_f.columns if "brand" in c]
+
+                if len(brand_cols) >= 2:
+                    # Ambil 2 kolom pertama yang mengandung kata brand
+                    df_f = df_f.rename(columns={
+                        brand_cols[0]: "brand_a",
+                        brand_cols[1]: "brand_b"
+                    })
+                else:
+                    st.error(f"Kolom brand tidak cukup ditemukan! Kolom tersedia: {df_f.columns.tolist()}")
+                    st.stop()
+
                 # VALIDASI ULANG
                 required_cols = {"brand_a", "brand_b"}
                 if not required_cols.issubset(df_f.columns):
@@ -1667,20 +1681,23 @@ def main():
                 df_f = filter_affinity_base(df_bs, sel_sec_aff, sel_plano)
 
                 # 🔧 NORMALISASI KOLOM
+                # ==============================
+                # AUTO DETECT BRAND A & BRAND B
+                # ==============================
+
                 df_f.columns = df_f.columns.str.strip().str.lower()
 
-                # NORMALISASI NAMA KOLOM BRAND
-                rename_map = {}
+                brand_cols = [c for c in df_f.columns if "brand" in c]
 
-                for col in df_f.columns:
-                    c = col.lower().replace(" ", "").replace("-", "").replace(".", "")
-                    
-                    if c in ["branda", "brandbefore", "brand_a"]:
-                        rename_map[col] = "brand_a"
-                    elif c in ["brandb", "brandafter", "brand_b"]:
-                        rename_map[col] = "brand_b"
-
-                df_f = df_f.rename(columns=rename_map)
+                if len(brand_cols) >= 2:
+                    # Ambil 2 kolom pertama yang mengandung kata brand
+                    df_f = df_f.rename(columns={
+                        brand_cols[0]: "brand_a",
+                        brand_cols[1]: "brand_b"
+                    })
+                else:
+                    st.error(f"Kolom brand tidak cukup ditemukan! Kolom tersedia: {df_f.columns.tolist()}")
+                    st.stop()
 
                 # VALIDASI ULANG
                 required_cols = {"brand_a", "brand_b"}

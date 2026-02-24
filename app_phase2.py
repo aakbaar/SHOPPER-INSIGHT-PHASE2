@@ -50,7 +50,6 @@ import os
 
 pd.set_option("styler.render.max_elements", 1000000) 
 st.set_page_config(layout="wide", page_title="SHOPPER INSIGHT", page_icon="📊")
-st.markdown(f"**PHASE 2**")
 
 # --- CUSTOM CSS (SIDEBAR, TABS, & AFFINITY DARK MODE) ---
 # --- CUSTOM CSS (SIDEBAR, TABS, & AFFINITY DARK MODE) ---
@@ -821,6 +820,7 @@ def main():
     start_idx = next((i for i, s in enumerate(sections_only) if str(s).startswith('B')), 0)
 
     st.sidebar.markdown('<p class="sidebar-title-custom">SHOPPER<br>CATEGORY<br>INSIGHT</p>', unsafe_allow_html=True)
+    st.markdown(f"**[NOV 2026 - JAN 2026]**")
     
     st.sidebar.markdown("<br>", unsafe_allow_html=True)
 

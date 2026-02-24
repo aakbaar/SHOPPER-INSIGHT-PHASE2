@@ -25,6 +25,16 @@ section[data-testid="stSidebar"] {
 html {
     zoom: 100%;
 }
+/* stop dataframe shifting */
+div[data-testid="stDataFrame"] {
+    overflow: auto !important;
+}
+
+/* kunci layout halaman */
+.block-container {
+    padding-top: 1rem !important;
+    padding-bottom: 1rem !important;
+}
 
 /* Jika lebar layar <= 1366px (laptop 13-14 inch) */
 @media screen and (max-width: 1366px) {

@@ -51,7 +51,7 @@ div[data-testid="stDataFrame"] thead tr th {
 /* ========================= */
 
 section[data-testid="stSidebar"] {
-    width: 260px !important;
+    width: 220px !important;
 }
 
 /* ========================= */

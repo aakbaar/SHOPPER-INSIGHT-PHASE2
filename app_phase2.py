@@ -214,7 +214,7 @@ st.markdown("""
     }
 
     .stTabs [data-baseweb="tab"] {
-        height: 30px;
+        height: 26px;
         background-color: transparent !important;
         border-radius: 0px !important; /* Kotak agar sekat konsisten */
         border: none !important;

@@ -10,8 +10,8 @@ st.markdown("""
 
 /* Judul Sidebar */
 .sidebar-title-custom {
-    font-size: 15px !important; 
-    margin-bottom: 10px !important;
+    font-size: 22px !important; 
+    margin-bottom: 15px !important;
 }
 
 /* Menu Radio Sidebar */
@@ -24,7 +24,7 @@ div[data-testid="stSidebar"] .stRadio label {
 /* Tabel jadi padat mirip tampilan Excel yang kamu mau */
 div[data-testid="stDataFrame"] td, 
 div[data-testid="stDataFrame"] th {
-    font-size: 8px !important;
+    font-size: 11px !important;
     padding: 3px 6px !important;
 }
 

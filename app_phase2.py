@@ -2,24 +2,8 @@ import streamlit as st
 
 st.markdown("""
 <style>
-/* COMPACT CANVAS */
-.block-container {
-    max-width: 1050px !important;   /* ini yang bikin terasa 85% */
-    padding-top: 0.8rem;
-    padding-bottom: 1.5rem;
-}
-
-/* Biar tetap center */
-.main {
-    display: flex;
-    justify-content: center;
-}
-
-/* Pastikan chart & table tidak overflow */
-div[data-testid="stDataFrame"],
-div[data-testid="stPlotlyChart"] {
-    width: 100% !important;
-}
+/* Jika lebar layar <= 1366px (laptop 13-14 inch) */ @media screen and (max-width: 1366px) { html { zoom: 80%; } }
+            
 /* Sticky first column for dataframe */
 div[data-testid="stDataFrame"] table {
     border-collapse: separate !important;

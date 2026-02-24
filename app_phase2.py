@@ -2,6 +2,27 @@ import streamlit as st
 
 st.markdown("""
 <style>
+/* perkecil lebar layout utama */
+.block-container {
+    max-width: 1200px !important;
+    padding-top: 1rem;
+    padding-bottom: 2rem;
+}
+
+/* sidebar tetap */
+section[data-testid="stSidebar"] {
+    width: 280px !important;
+}
+
+/* dataframe tidak melebar liar */
+div[data-testid="stDataFrame"] {
+    width: 100% !important;
+}
+
+/* chart tidak overflow */
+div[data-testid="stPlotlyChart"] {
+    width: 100% !important;
+}
 
 /* Sticky first column for dataframe */
 div[data-testid="stDataFrame"] table {

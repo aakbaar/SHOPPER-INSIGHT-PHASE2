@@ -2,6 +2,25 @@ import streamlit as st
 
 st.markdown("""
 <style>
+/* FIX: container sidebar agar tidak ikut membesar */
+section[data-testid="stSidebar"] > div {
+    padding-bottom: 0px !important;
+}
+
+/* FIX: hilangkan block putih di bawah tombol */
+section[data-testid="stSidebar"] div.stMarkdown {
+    margin-bottom: 0px !important;
+}
+
+/* FIX: tombol tidak dorong layout sidebar */
+section[data-testid="stSidebar"] a {
+    display: inline-block !important;
+}
+
+/* FIX paling penting: stop sidebar container grow */
+section[data-testid="stSidebar"] {
+    overflow: hidden !important;
+}
 /* Default tetap normal */
 html {
     zoom: 100%;
@@ -952,27 +971,22 @@ def main():
     st.sidebar.markdown("---")
 
     st.sidebar.markdown("""
-    <div style="padding: 0 10px;">
-        <a href="https://shopper-insight.streamlit.app/" target="_blank" style="text-decoration:none;">
-            <button style="
-                width:100%;
-                max-width:260px;
-                display:block;
-                margin:0 auto;
-                background: linear-gradient(135deg, #FF0000, #CC0000);
-                color:white;
-                border:none;
-                padding:12px;
-                border-radius:12px;
-                font-weight:600;
-                font-size:14px;
-                cursor:pointer;
-                box-shadow: 0 4px 10px rgba(255,0,0,0.25);
-            ">
-                Shopper Insight Phase 1
-            </button>
-        </a>
-    </div>
+    <a href="https://shopper-insight.streamlit.app/" target="_blank">
+        <button style="
+            width:100%;
+            background: linear-gradient(135deg, #FF0000, #CC0000);
+            color:white;
+            border:none;
+            padding:12px;
+            border-radius:12px;
+            font-weight:600;
+            font-size:14px;
+            cursor:pointer;
+            box-shadow: 0 4px 10px rgba(255,0,0,0.25);
+        ">
+            Shopper Insight Phase 1
+        </button>
+    </a>
     """, unsafe_allow_html=True)
 
     if menu == "📈 PERFORMANCE":

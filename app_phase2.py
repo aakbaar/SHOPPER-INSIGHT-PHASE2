@@ -4,7 +4,7 @@ st.markdown("""
 <style>
 [data-testid="stSidebar"] {
     min-width: 160px !important; /* Sesuaikan lebar minimal */
-    max-width: 200px !important; /* Sesuaikan lebar maksimal */
+    max-width: 240px !important; /* Sesuaikan lebar maksimal */
     background-color: #FFFFFF !important;
 }
 

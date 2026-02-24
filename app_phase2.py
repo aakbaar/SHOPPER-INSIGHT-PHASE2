@@ -4,8 +4,8 @@ st.markdown("""
 <style>
 /* 2. PERSEMPIT SIDEBAR & KECILKAN MENU */
 [data-testid="stSidebar"] {
-    min-width: 180px !important;
-    max-width: 200px !important;
+    min-width: 200px !important;
+    max-width: 240px !important;
 }
 
 /* Judul Sidebar */

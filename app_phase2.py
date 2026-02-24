@@ -2,6 +2,48 @@ import streamlit as st
 
 st.markdown("""
 <style>
+[data-testid="stSidebar"] {
+    min-width: 220px !important; /* Sesuaikan lebar minimal */
+    max-width: 260px !important; /* Sesuaikan lebar maksimal */
+    background-color: #FFFFFF !important;
+}
+
+/* 2. MENGECILKAN FONT JUDUL SIDEBAR (Agar proporsional) */
+.sidebar-title-custom {
+    font-size: 24px !important; 
+    font-weight: 800;
+    margin-bottom: 30px !important;
+}
+
+/* 3. MENGECILKAN FONT & PADDING DI DALAM TABEL (st.dataframe) */
+div[data-testid="stDataFrame"] td, 
+div[data-testid="stDataFrame"] th {
+    font-size: 12px !important;
+    padding: 4px 8px !important;
+}
+
+/* 4. MENGECILKAN FONT PADA TAB & FILTER */
+.stTabs [data-baseweb="tab"] {
+    font-size: 13px !important;
+    height: 30px !important;
+}
+
+div[data-baseweb="select"] {
+    font-size: 13px !important;
+}
+
+/* 5. MENGECILKAN METRIC (Angka 8.91%, dsb) */
+[data-testid="stMetricValue"] {
+    font-size: 22px !important;
+}
+[data-testid="stMetricLabel"] {
+    font-size: 14px !important;
+}
+
+/* Tetap jaga tabel agar stabil */
+div[data-testid="stDataFrame"] {
+    height: 550px !important;
+}
 div[data-testid="stDataFrame"] table th:first-child,
 div[data-testid="stDataFrame"] table td:first-child {
     position: sticky;

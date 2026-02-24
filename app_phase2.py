@@ -219,6 +219,27 @@ st.markdown("""
     .stTabs [data-baseweb="tab-highlight"] {
         display: none !important;
     }
+    
+    .block-container {
+        max-width: 100% !important;
+        padding-left: 2rem !important;
+        padding-right: 2rem !important;
+    }
+
+    /* Paksa area utama melebar */
+    section.main > div {
+        max-width: 100% !important;
+    }
+
+    /* Paksa dataframe full lebar */
+    [data-testid="stDataFrame"] {
+        width: 100% !important;
+    }
+
+    /* Hilangkan auto shrink container */
+    .css-18e3th9, .css-1d391kg {
+        max-width: 100% !important;
+    }
     </style>
     """, unsafe_allow_html=True)
 

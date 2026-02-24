@@ -2,28 +2,24 @@ import streamlit as st
 
 st.markdown("""
 <style>
-/* perkecil lebar layout utama */
+/* COMPACT CANVAS */
 .block-container {
-    max-width: 1200px !important;
-    padding-top: 1rem;
-    padding-bottom: 2rem;
+    max-width: 1050px !important;   /* ini yang bikin terasa 85% */
+    padding-top: 0.8rem;
+    padding-bottom: 1.5rem;
 }
 
-/* sidebar tetap */
-section[data-testid="stSidebar"] {
-    width: 280px !important;
+/* Biar tetap center */
+.main {
+    display: flex;
+    justify-content: center;
 }
 
-/* dataframe tidak melebar liar */
-div[data-testid="stDataFrame"] {
-    width: 100% !important;
-}
-
-/* chart tidak overflow */
+/* Pastikan chart & table tidak overflow */
+div[data-testid="stDataFrame"],
 div[data-testid="stPlotlyChart"] {
     width: 100% !important;
 }
-
 /* Sticky first column for dataframe */
 div[data-testid="stDataFrame"] table {
     border-collapse: separate !important;

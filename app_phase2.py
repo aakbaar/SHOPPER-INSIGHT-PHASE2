@@ -1,31 +1,5 @@
 import streamlit as st
 
-st.set_page_config(
-    page_title="SHOPPER INSIGHT",
-    layout="wide"
-)
-st.markdown("""
-<style>
-.block-container {
-    padding-top: 1rem;
-    padding-bottom: 1rem;
-    max-width: 100% !important;
-}
-
-[data-testid="stDataFrame"] {
-    width: 100% !important;
-}
-
-.css-1d391kg {  /* main content area */
-    width: 100% !important;
-}
-
-section.main > div {
-    max-width: 100% !important;
-}
-</style>
-""", unsafe_allow_html=True)
-
 st.markdown("""
 <style>
 /* Default tetap normal */
@@ -219,54 +193,48 @@ st.markdown("""
     .stTabs [data-baseweb="tab-highlight"] {
         display: none !important;
     }
-    
-    .block-container {
-        max-width: 100% !important;
-        padding-left: 2rem !important;
-        padding-right: 2rem !important;
-    }
-
-    /* Paksa area utama melebar */
-    section.main > div {
-        max-width: 100% !important;
-    }
-
-    /* Paksa dataframe full lebar */
-    [data-testid="stDataFrame"] {
-        width: 100% !important;
-    }
-
-    /* Hilangkan auto shrink container */
-    .css-18e3th9, .css-1d391kg {
-        max-width: 100% !important;
-    }
     </style>
     """, unsafe_allow_html=True)
 
 # --- 1. DATA LOADERS ---
 @st.cache_data
 def load_perf_file(level, versi):
-    filename = f"perf_{level}_phase2_{versi.lower()}.csv"
+    filename = f"perf_{level}_{versi.lower()}.csv"
     if os.path.exists(filename):
+        mtime = os.path.getmtime(filename)
         return pd.read_csv(filename)
     return pd.DataFrame()
 
 @st.cache_data
 def load_segment_unified():
-    if os.path.exists("perf_segmentation_unified_phase2.csv"):
-        return pd.read_csv("perf_segmentation_unified_phase2.csv")
+    if os.path.exists("perf_segmentation_unified.csv"):
+        return pd.read_csv("perf_segmentation_unified.csv")
     return pd.DataFrame()
 
 @st.cache_data
 def load_loyalty_data():
     try:
-    
+        import glob
+        import pandas as pd
+
+        # Gabungkan CATEGORY_LOYALTY_part
+        cat_loy_files = sorted(glob.glob("CATEGORY_LOYALTY_part*.csv"))
+
+        if not cat_loy_files:
+            st.error("CATEGORY_LOYALTY_part files tidak ditemukan")
+            return {}
+
+        cat_loy_df = pd.concat(
+            [pd.read_csv(f) for f in cat_loy_files],
+            ignore_index=True
+        )
+
         return {
             "br_loy_cat": pd.read_csv("BRAND_LOYALTY_CATEGORY_PHASE2.csv"),
             "br_loy_sub": pd.read_csv("BRAND_LOYALTY_SUBCATEGORY_PHASE2.csv"),
             "br_swi_cat": pd.read_csv("BRAND_SWITCH_CATEGORY_PHASE2.csv"),
             "br_swi_sub": pd.read_csv("BRAND_SWITCH_SUBCATEGORY_PHASE2.csv"),
-            "cat_loy": pd.read_csv("CATEGORY_LOYALTY_PHASE2.csv"),
+            "cat_loy": pd.read_csv("CATEGORY_LOYALTY_PHASE2.csv")
             "sub_loy": pd.read_csv("SUBCATEGORY_LOYALTY_PHASE2.csv")
         }
 
@@ -276,9 +244,6 @@ def load_loyalty_data():
 
 @st.cache_data
 def load_affinity_data():
-    import glob
-    import os
-
     files = {
         "cat": "AFFINITY_CAT_PHASE2.csv",
         "subcat": "AFFINITY_SUBCAT_PHASE2.csv",
@@ -290,39 +255,10 @@ def load_affinity_data():
 
     for key, file in files.items():
         try:
-            # ================================
-            # CASE KHUSUS: BRAND_CAT DI-SPLIT
-            # ================================
-            if key == "brand_cat":
-                
-                # kalau file utama ADA → pakai langsung
-                if os.path.exists(file):
-                    df = pd.read_csv(file, sep=None, engine="python")
-                    print(f"{file} ✅ loaded (single file)")
-                
-                # kalau file utama TIDAK ADA → cari part
-                else:
-                    part_files = sorted(glob.glob("AFFINITY_BRAND_CAT_PHASE2_part*.csv"))
-                    
-                    if part_files:
-                        print(f"Loading split files: {part_files}")
-                        df = pd.concat(
-                            [pd.read_csv(f, sep=None, engine="python") for f in part_files],
-                            ignore_index=True
-                        )
-                    else:
-                        print("AFFINITY_BRAND_CAT_PHASE2 tidak ditemukan")
-                        df = pd.DataFrame()
-
-            # ================================
-            # FILE NORMAL
-            # ================================
-            else:
-                df = pd.read_csv(file, sep=None, engine="python")
-                print(f"{file} ✅ OK")
-
+            # AUTO DETECT delimiter (, atau ;)
+            df = pd.read_csv(file, sep=None, engine="python")
+            print(f"{file} ✅ OK")
             data[key] = df
-
         except Exception as e:
             print(f"{file} ❌ ERROR: {e}")
             data[key] = pd.DataFrame()
@@ -349,8 +285,21 @@ def render_performance_cards(df, is_category=False):
     }
     
     if is_category:
-        metrics["pen_val"] = df["PENETRATION_AFTER"].mean() if "PENETRATION_AFTER" in df.columns else 0
-        metrics["pen_gr"] = df["PENETRATION_GROWTH"].mean() if "PENETRATION_GROWTH" in df.columns else 0
+
+        metrics["pen_val"] = (
+            df["TRANSACTION_PENETRATION_AFTER"].mean()
+            if "TRANSACTION_PENETRATION_AFTER" in df.columns else 0
+        )
+
+        metrics["pen_gr"] = (
+            df["TRANSACTION_PENETRATION_GROWTH"].mean()
+            if "TRANSACTION_PENETRATION_GROWTH" in df.columns else 0
+        )
+
+        metrics["buyer_total"] = (
+            df["BUYER_COUNT_AFTER"].sum()
+            if "BUYER_COUNT_AFTER" in df.columns else 0
+        )
 
     # Indikator Growth (Bubble)
     def get_delta_html(val):
@@ -381,9 +330,10 @@ def render_performance_cards(df, is_category=False):
         with cols[0]:
             st.markdown(f"""
                 <div style="{card_container_style}">
-                    <p style="color:#666; font-size:14px; margin:0; font-weight:500;">Category Penetration</p>
+                    <p style="color:#666; font-size:14px; margin:0; font-weight:500;">Transaction Penetration</p>
                     <div style="font-size:32px; font-weight:bold; color:#000; line-height:1.1;">{metrics['pen_val']:.2%}</div>
                     {get_delta_html(metrics['pen_gr'])}
+                    <p style="color:#888; font-size:11px; margin:0;">Total Buyers: {metrics['buyer_total']:,}</p>
                 </div>
             """, unsafe_allow_html=True)
 
@@ -414,51 +364,64 @@ def display_styled_table(df):
         st.warning("DATA TIDAK TERSEDIA")
         return
 
+    # 1. Bersihkan data (Copy agar tidak merusak dataframe asli)
+    df = df.copy()
+
+# 🔥 FIX: hapus duplicate column name (penyebab pd.to_numeric error)
+    df = df.loc[:, ~df.columns.duplicated()]
+
     # Bersihkan kolom yang tidak perlu agar tampilan rapi
-    cols_to_drop = [c for c in df.columns if any(x in c for x in ["PROMO_PCT", "BUYER_COUNT"])]
+    cols_to_drop = [c for c in df.columns if "PROMO_PCT" in c]
     df = df.drop(columns=cols_to_drop, errors='ignore')
     
-    # Identifikasi semua kolom Growth
+    # 2. Identifikasi kolom Growth secara dinamis dan pastikan ada di DF
+    # Kita hanya mengambil kolom yang BENAR-BENAR ada di df.columns
     growth_cols = [c for c in df.columns if "GROWTH" in c]
 
-    # --- FIX DATA TYPE & NULLS ---
+    # Pastikan tipe data numerik untuk kolom growth agar tidak error saat diwarnai
     for col in growth_cols:
-        # Paksa konversi ke numeric, yang error (string kosong/teks) jadi NaN
         df[col] = pd.to_numeric(df[col], errors='coerce')
 
-    # --- LOGIKA PEWARNAAN MANUAL ---
+    # 3. Logika pewarnaan
     def apply_growth_color(val):
         if pd.isna(val) or val == 0:
-            return 'background-color: white; color: black;'
+            return None # Jangan beri style jika kosong
         if val > 0:
             return 'background-color: #d4edda; color: #155724;'
         if val < 0:
             return 'background-color: #f8d7da; color: #721c24;'
-        return 'background-color: white; color: black;'
+        return None
 
-    # --- FORMATTING TAMPILAN ---
+    # 4. Dictionary Formatting
     format_dict = {}
     for col in df.columns:
         if "GROWTH" in col or "PENETRATION" in col:
             format_dict[col] = "{:.2%}"
-        elif any(x in col for x in ["SPT", "SPB"]):
+        elif any(x in col for x in ["SPT", "SPB", "SALES_VALUE"]):
             format_dict[col] = "Rp {:,.0f}"
-        # Pastikan AVG dan PURCHASE_FREQUENCY selalu 2 desimal di belakang koma
-        elif "AVG" in col or "PURCHASE_FREQUENCY" in col:
+        elif any(x in col for x in ["AVG", "FREQUENCY", "QTY"]):
             format_dict[col] = "{:,.2f}"
 
-    # Terapkan styling
-    styled_df = df.style.format(format_dict, na_rep="-")
-
-    if growth_cols:
-        styled_df = styled_df.map(apply_growth_color, subset=growth_cols)
-
-    # 🔥 TAMBAHKAN INI (freeze kolom pertama)
-    styled_df = styled_df.set_sticky(axis="columns")
-    # Tampilkan di Streamlit
-    st.dataframe(df, use_container_width=True, hide_index=True)
+    # 5. Terapkan styling dengan proteksi KeyError
+    # Kita hanya memformat kolom yang ada di df
+    safe_format_dict = {k: v for k, v in format_dict.items() if k in df.columns}
     
-    # Menambahkan Keterangan Label secara otomatis di bawah semua tabel Performance
+    styled_df = df.style.format(safe_format_dict, na_rep="-")
+
+    # PROTEKSI: Hanya applymap jika kolom growth ditemukan di dataframe saat ini
+    valid_growth_cols = [c for c in growth_cols if c in df.columns]
+
+    if valid_growth_cols:
+        styled_df = styled_df.applymap(apply_growth_color, subset=valid_growth_cols)
+    
+
+    # 6. Tampilkan ke Streamlit
+    st.dataframe(
+        styled_df,
+        use_container_width=True, 
+        hide_index=True
+    )
+    
     st.caption("ℹ️ Keterangan Tabel = **SPT** (Spend Per Trip) | **SPB** (Spend Per Buyer)")
    
 # ===============================================================
@@ -499,15 +462,23 @@ def reorder_final(df, level):
     metric_order = [
         "AVG_QTY_STRUK_MONTH_BEFORE", "AVG_QTY_STRUK_MONTH_AFTER", "AVG_QTY_STRUK_MONTH_GROWTH",
         "AVG_STRUK_MONTH_BEFORE", "AVG_STRUK_MONTH_AFTER", "AVG_STRUK_MONTH_GROWTH",
-        "PURCHASE_FREQUENCY_BEFORE", "PURCHASE_FREQUENCY_AFTER", "PURCHASE_FREQUENCY_GROWTH",
+        "TRANSACTION_PENETRATION_BEFORE", "TRANSACTION_PENETRATION_AFTER", "TRANSACTION_PENETRATION_GROWTH",
         "SPT_BEFORE", "SPT_AFTER", "SPT_GROWTH",
         "SPB_BEFORE", "SPB_AFTER", "SPB_GROWTH"
     ]
-    
-    # Tambahkan Penetration HANYA untuk level category
+
+    # Tambahkan Penetration HANYA untuk level category  
     if level == "category":
         metric_order += [
-            "PENETRATION_BEFORE", "PENETRATION_AFTER", "PENETRATION_GROWTH"
+            # versi baru
+            "TRANSACTION_PENETRATION_BEFORE",
+            "TRANSACTION_PENETRATION_AFTER",
+            "TRANSACTION_PENETRATION_GROWTH",
+            
+            # fallback versi lama
+            "PENETRATION_BEFORE",
+            "PENETRATION_AFTER",
+            "PENETRATION_GROWTH"
         ]
     
     # 3. Filter kolom yang benar-benar ada di dalam dataset agar tidak error
@@ -700,7 +671,6 @@ def render_affinity_tab(df, col_a, col_b, filter_cols, key_prefix, show_qty_impa
             hide_index=True
         )
 
-df_p = load_perf_file("category", "V1")
 def render_plano_matrix(df):
     if df.empty: return
     
@@ -827,40 +797,142 @@ def render_switching_cards(total_sw, total_no, top_dest_name, top_dest_pct):
     
     st.markdown("<br>", unsafe_allow_html=True)
 
+def render_category_promo_driven(df):
+    """
+    Menampilkan kategori yang pembeliannya didominasi promo vs non promo
+    Aman walaupun kolom belum ada (tidak crash)
+    """
+
+    if df.empty:
+        return
+
+    # VALIDASI KOLOM
+    required_cols = {"PROMO_BUYER_AFTER", "NON_PROMO_BUYER_AFTER", "CATEGORY"}
+    if not required_cols.issubset(df.columns):
+        return
+
+    # Hitung share
+    temp = df.copy()
+
+    temp["TOTAL_BUYER"] = (
+        temp["PROMO_BUYER_AFTER"].fillna(0)
+        + temp["NON_PROMO_BUYER_AFTER"].fillna(0)
+    )
+
+    # Hindari pembagian nol
+    temp = temp[temp["TOTAL_BUYER"] > 0]
+
+    temp["PROMO_SHARE"] = temp["PROMO_BUYER_AFTER"] / temp["TOTAL_BUYER"]
+    temp["NON_PROMO_SHARE"] = temp["NON_PROMO_BUYER_AFTER"] / temp["TOTAL_BUYER"]
+
+    # Urutkan kategori paling promo-driven
+    temp = temp.sort_values("PROMO_SHARE", ascending=False)
+
+    st.markdown("### 🚀 CATEGORY PROMO DRIVEN")
+
+    st.dataframe(
+        temp[
+            [
+                "CATEGORY",
+                "PROMO_BUYER_AFTER",
+                "NON_PROMO_BUYER_AFTER",
+                "PROMO_SHARE",
+                "NON_PROMO_SHARE",
+            ]
+        ]
+        .style.format(
+            {
+                "PROMO_SHARE": "{:.1%}",
+                "NON_PROMO_SHARE": "{:.1%}",
+            }
+        ),
+        use_container_width=True,
+        hide_index=True,
+    )
+def render_category_promo_share_chart(df):
+    """
+    Promo vs Non Promo (Average BEFORE & AFTER)
+    1 chart saja per category
+    """
+
+    if df.empty:
+        return
+
+    required_cols = {
+        "CATEGORY",
+        "PROMO_SHARE_BEFORE",
+        "PROMO_SHARE_AFTER",
+        "NON_PROMO_SHARE_BEFORE",
+        "NON_PROMO_SHARE_AFTER"
+    }
+
+    if not required_cols.issubset(df.columns):
+        st.info("Promo share belum tersedia di dataset.")
+        return
+
+    import plotly.express as px
+
+    st.markdown ("------")
+    st.markdown("### CATEGORY PROMO DRIVEN ")
+
+    temp = df.copy()
+
+    # ==============================
+    # AVERAGE BEFORE & AFTER
+    # ==============================
+    temp["PROMO_FINAL"] = (
+        temp["PROMO_SHARE_BEFORE"].fillna(0)
+        + temp["PROMO_SHARE_AFTER"].fillna(0)
+    ) / 2
+
+    temp["NON_PROMO_FINAL"] = (
+        temp["NON_PROMO_SHARE_BEFORE"].fillna(0)
+        + temp["NON_PROMO_SHARE_AFTER"].fillna(0)
+    ) / 2
+
+    # ==============================
+    # Reshape untuk stacked chart
+    # ==============================
+    chart_df = temp.melt(
+        id_vars="CATEGORY",
+        value_vars=["PROMO_FINAL", "NON_PROMO_FINAL"],
+        var_name="TYPE",
+        value_name="SHARE"
+    )
+
+    chart_df["TYPE"] = chart_df["TYPE"].map({
+        "PROMO_FINAL": "PROMO",
+        "NON_PROMO_FINAL": "NON PROMO"
+    })
+
+    # ==============================
+    # Plot (1 chart only)
+    # ==============================
+    fig = px.bar(
+        chart_df,
+        y="CATEGORY",
+        x="SHARE",
+        orientation="h",
+        color="TYPE",
+        barmode="stack",
+        text=chart_df["SHARE"].apply(lambda x: f"{x:.0%}"),
+        color_discrete_map={
+            "PROMO": "#7AD965",
+            "NON PROMO": "#DF7878"
+        }
+    )
+
+    fig.update_layout(
+        xaxis_tickformat=".0%",
+        height=500,
+        showlegend=True,
+        legend_title=""
+    )
+
+    st.plotly_chart(fig, use_container_width=True)
+
 def main():
     global df_p 
-    
-    # --- HITUNG DARI DATA MENTAH ---
-    global total_struk_global
-
-    # ================================
-    # HITUNG TOTAL TRANSAKSI GLOBAL
-    # ================================
-    if 'df_raw' in globals() and 'NO_STRUK' in df_raw.columns:
-        total_struk_global = df_raw['NO_STRUK'].nunique()
-
-    # fallback jika tidak ada data mentah
-    elif 'BUYER_COUNT_AFTER' in df_p.columns:
-        total_struk_global = df_p['BUYER_COUNT_AFTER'].sum()
-
-    elif 'BUYER_COUNT_BEFORE' in df_p.columns:
-        total_struk_global = df_p['BUYER_COUNT_BEFORE'].sum()
-
-    else:
-        total_struk_global = 0
-
-
-    # ================================
-    # AMANKAN SECTION LIST
-    # ================================
-    if "SECTION" in df_p.columns:
-        sections_only = sorted(df_p["SECTION"].dropna().unique().tolist())
-    else:
-        st.error("Kolom SECTION tidak ditemukan di perf_category file.")
-        sections_only = []
-
-    # Cari index pertama yang huruf depannya 'B' (Default ke 0 jika tidak ada)
-    start_idx = next((i for i, s in enumerate(sections_only) if str(s).startswith('B')), 0)
 
     st.sidebar.markdown("""
     <p class="sidebar-title-custom">
@@ -884,17 +956,10 @@ def main():
     # 2. MENU: Beri sedikit keterangan jika perlu
     st.sidebar.write("MENU:")
     menu = st.sidebar.radio("", ["📈 PERFORMANCE", "🔄 SWITCHING", "🛒 AFFINITY"], label_visibility="collapsed")
-
-    try:
-        sections_only = sorted(df_p["SECTION"].unique().tolist())
-    except NameError:
-        st.error("Variabel 'df_p' tidak ditemukan. Pastikan data performance sudah di-load di awal file.")
-        return
-    
     st.sidebar.markdown("---")
 
     st.sidebar.markdown("""
-    <a href="https://shopper-insight.streamlit.app//" target="_blank">
+    <a href="https://shopper-insight.streamlit.app/" target="_blank">
         <button style="
             width:100%;
             background: linear-gradient(135deg, #FF0000, #CC0000);
@@ -916,10 +981,25 @@ def main():
         col_title, col_plano, col_sec = st.columns([5, 2.5, 2.5])
         with col_title: st.title("📈 PERFORMANCE OVERVIEW")
         with col_plano: sel_plano = st.selectbox("VERSI PLANO", ["V1", "V2"], key="plano_perf")
+        # 🔥 Load dataset perf sesuai plano
+        df_p = load_perf_file("category", sel_plano)
+
+        # 🔥 Build section list dari data tersebut
+        sections_only = sorted(df_p["SECTION"].dropna().unique().tolist())
+
+        # default index section huruf B
+        start_idx = next((i for i, s in enumerate(sections_only) if str(s).startswith('B')), 0)
+
+        # 🔥 Universe transaksi global
+        global total_struk_global
+        if 'df_raw' in globals():
+            total_struk_global = df_raw['NO_STRUK'].nunique()
+        else:
+            total_struk_global = df_p['BUYER_COUNT_BEFORE'].max()
         with col_sec: 
             # HAPUS ["ALL"] + dan gunakan index=start_idx
             sel_sec = st.selectbox("SECTION FILTER", sections_only, index=start_idx, key="sec_perf")
-        st.markdown(f"**[NOV 2026 - JAN 2026]**")
+        st.markdown(f"**[JUL - SEP 2025]**")
 
         st.markdown("---")
 
@@ -945,8 +1025,7 @@ def main():
             if df.empty: return df
             if sel_sec != "ALL": df = df[df["SECTION"] == sel_sec]
             return df.reset_index(drop=True)
-        
-
+        st.markdown (" ---- ")
         with t_cat:
             df_f = apply_filter(load_perf_file("category", sel_plano))
             if not df_f.empty:
@@ -956,7 +1035,13 @@ def main():
                 with card_place:
                     render_performance_cards(df_f, is_category=True)
                 display_styled_table(reorder_final(df_f, "category"))
-                render_static_affinity_matrix() # Tambahkan di baris terakhir tab
+
+                render_category_promo_driven(df_f)
+
+                # 🔥 TAMBAHKAN INI
+                render_category_promo_share_chart(df_f)
+
+                render_static_affinity_matrix()
 
         # ==========================================
         # TAB SUBCATEGORY
@@ -1098,7 +1183,7 @@ def main():
             st.markdown('<h1 style="margin:0;">🔄 SWITCHING & LOYALTY ANALYSIS</h1>', unsafe_allow_html=True)
         with col_sec_filter:
             sel_sec_sw = st.selectbox("SECTION FILTER", sections_only, index=start_idx, key="sec_sw_top")
-        st.markdown(f"**[NOV 2025 - DES 2026]**")
+        st.markdown(f"**[JUL - SEP 2025]**")
 
         st.markdown("---")
         loy_data = load_loyalty_data()
@@ -1357,7 +1442,7 @@ def main():
 
         # SETUP OPSI PLANO
         plano_options = ["BEFORE_V1", "BEFORE_V2", "AFTER_V1", "AFTER_V2", "NOT_TRIAL"]
-        st.markdown(f"**Phase 2 [NOV 2025 -JAN 2026]**")
+        st.markdown(f"**[JUL - SEP 2025]**")
         with col_plano_filter:
             sel_plano = st.selectbox(
                 "VERSI PLANO",
@@ -1569,5 +1654,3 @@ def main():
 
 if __name__ == "__main__":
     main()
-
-    

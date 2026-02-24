@@ -204,11 +204,11 @@ st.markdown("""
     /* 5. TAB STYLING (MODERN SEGMENTED DENGAN SEKAT) */
     .stTabs [data-baseweb="tab-list"] {
         background-color: #F0F2F6 !important; 
-        border-radius: 12px;
+        border-radius: 10px;
         padding: 6px;
         gap: 0px; /* Gap dinolkan agar sekat terlihat menyambung */
         border: 1px solid #DFE1E5;
-        margin-bottom: 25px;
+        margin-bottom: 22px;
         display: flex;
         align-items: center;
     }

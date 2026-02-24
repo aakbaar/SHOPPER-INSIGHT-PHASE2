@@ -2,22 +2,6 @@ import streamlit as st
 
 st.markdown("""
 <style>
-/* SCALE SELURUH APP (AMAN) */
-body {
-    transform: scale(0.88);
-    transform-origin: top left;
-    width: 113%;
-}
-
-/* supaya tidak kepotong bawah */
-.main {
-    padding-bottom: 60px;
-}
-
-/* dataframe tetap stabil */
-div[data-testid="stDataFrame"] {
-    overflow: auto !important;
-}
 
 /* Sticky first column for dataframe */
 div[data-testid="stDataFrame"] table {

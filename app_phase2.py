@@ -249,6 +249,36 @@ st.markdown("""
     .stTabs [data-baseweb="tab-highlight"] {
         display: none !important;
     }
+    /* 1. MENGECILKAN KONTAINER KARTU */
+    [data-testid="stMetric"] {
+        background-color: #ffffff;
+        border: 1px solid #f0f2f6; /* Opsional: tambah border halus */
+        padding: 10px !important;
+        border-radius: 8px;
+    }
+
+    /* 2. MENGECILKAN LABEL (Judul di atas angka, misal: 'Spend Per Buyer') */
+    [data-testid="stMetricLabel"] {
+        font-size: 0.75rem !important;
+        font-weight: 500 !important;
+        color: #64748b !important;
+    }
+
+    /* 3. MENGECILKAN ANGKA UTAMA (Misal: 'Rp 22,663') */
+    [data-testid="stMetricValue"] {
+        font-size: 1.2rem !important; /* Perkecil angka agar tidak makan tempat */
+        font-weight: 700 !important;
+    }
+
+    /* 4. MENGECILKAN ANGKA PERTUMBUHAN/DELTA (Misal: '-0.59%') */
+    [data-testid="stMetricDelta"] {
+        font-size: 0.7rem !important;
+    }
+
+    /* 5. MENGATUR JARAK ANTAR KARTU (Jika pakai st.columns) */
+    div[data-testid="column"] {
+        padding: 0px 5px !important;
+    }
     </style>
     """, unsafe_allow_html=True)
 

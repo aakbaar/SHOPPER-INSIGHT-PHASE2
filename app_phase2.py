@@ -124,8 +124,7 @@ st.markdown("""
 
     /* Judul Sidebar Custom */
     .sidebar-title-custom {
-        /* SILAKAN UBAH ANGKA DI BAWAH INI UNTUK BESAR/KECIL FONT */
-        font-size: 37px !important; 
+        font-size: 35px !important; 
         
         font-weight: 800;
         color: #1E293B;

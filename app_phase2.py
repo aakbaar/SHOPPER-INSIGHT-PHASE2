@@ -4,6 +4,27 @@ st.set_page_config(
     page_title="SHOPPER INSIGHT",
     layout="wide"
 )
+st.markdown("""
+<style>
+.block-container {
+    padding-top: 1rem;
+    padding-bottom: 1rem;
+    max-width: 100% !important;
+}
+
+[data-testid="stDataFrame"] {
+    width: 100% !important;
+}
+
+.css-1d391kg {  /* main content area */
+    width: 100% !important;
+}
+
+section.main > div {
+    max-width: 100% !important;
+}
+</style>
+""", unsafe_allow_html=True)
 
 st.markdown("""
 <style>
@@ -414,11 +435,7 @@ def display_styled_table(df):
     # 🔥 TAMBAHKAN INI (freeze kolom pertama)
     styled_df = styled_df.set_sticky(axis="columns")
     # Tampilkan di Streamlit
-    st.dataframe(
-        styled_df,
-        use_container_width=True, 
-        hide_index=True
-    )
+    st.dataframe(df, use_container_width=True, hide_index=True)
     
     # Menambahkan Keterangan Label secara otomatis di bawah semua tabel Performance
     st.caption("ℹ️ Keterangan Tabel = **SPT** (Spend Per Trip) | **SPB** (Spend Per Buyer)")

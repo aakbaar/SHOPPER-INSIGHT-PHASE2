@@ -2,16 +2,78 @@ import streamlit as st
 
 st.markdown("""
 <style>
-@media screen and (max-width:1366px){
+/* Kecilkan lebar layout utama */
+.block-container {
+    max-width: 1200px;
+    padding-top: 1rem;
+    padding-bottom: 0rem;
+}
 
-    html {
-        zoom: 0.80;
-    }
+/* ========================= */
+/* FONT SCALING */
+/* ========================= */
 
-    section[data-testid="stSidebar"] {
-        zoom: 1 !important;
-    }
+html, body, [class*="css"]  {
+    font-size: 14px;
+}
 
+h1 { font-size: 28px; }
+h2 { font-size: 22px; }
+h3 { font-size: 18px; }
+
+/* ========================= */
+/* METRIC CARD COMPACT */
+/* ========================= */
+
+div[data-testid="metric-container"] {
+    padding: 10px 14px;
+    border-radius: 10px;
+}
+
+/* ========================= */
+/* DATAFRAME SAFE */
+/* ========================= */
+
+div[data-testid="stDataFrame"] {
+    overflow: auto;
+}
+
+/* sticky header tetap aman */
+div[data-testid="stDataFrame"] thead tr th {
+    position: sticky;
+    top: 0;
+    background: white;
+    z-index: 2;
+}
+
+/* ========================= */
+/* SIDEBAR TETAP NORMAL */
+/* ========================= */
+
+section[data-testid="stSidebar"] {
+    width: 260px !important;
+}
+
+/* ========================= */
+/* TAB COMPACT */
+/* ========================= */
+
+button[role="tab"] {
+    padding: 6px 12px;
+    border-radius: 10px;
+}
+
+/* ========================= */
+/* SPACING RAPAT */
+/* ========================= */
+
+div[data-testid="stVerticalBlock"] {
+    gap: 0.5rem;
+}
+
+/* hilangkan ruang kosong */
+div[data-testid="stVerticalBlock"] > div:empty {
+    display: none;
 }
 div[data-testid="stDataFrame"] table th:first-child,
 div[data-testid="stDataFrame"] table td:first-child {

@@ -17,9 +17,9 @@ html, body, [class*="css"]  {
     font-size: 12px;
 }
 
-h1 { font-size: 28px; }
-h2 { font-size: 22px; }
-h3 { font-size: 18px; }
+h1 { font-size: 26px; }
+h2 { font-size: 20px; }
+h3 { font-size: 16px; }
 
 /* ========================= */
 /* METRIC CARD COMPACT */

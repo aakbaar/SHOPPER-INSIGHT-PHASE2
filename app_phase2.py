@@ -2,18 +2,13 @@ import streamlit as st
 
 st.markdown("""
 <style>
-/* Scale seluruh app jadi 75% */
-.main > div {
-    transform: scale(0.75);
-    transform-origin: top left;
-    width: 133.33%;   /* kompensasi agar tidak terpotong */
+@media screen and (max-width: 1366px) {
+    .main > div {
+        transform: scale(0.75);
+        transform-origin: top left;
+        width: 133.33%;
+    }
 }
-
-/* Sidebar tetap normal (tidak ikut mengecil) */
-section[data-testid="stSidebar"] {
-    transform: none !important;
-}
-
 div[data-testid="stDataFrame"] table th:first-child,
 div[data-testid="stDataFrame"] table td:first-child {
     position: sticky;

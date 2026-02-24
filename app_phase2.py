@@ -50,6 +50,7 @@ import os
 
 pd.set_option("styler.render.max_elements", 1000000) 
 st.set_page_config(layout="wide", page_title="SHOPPER INSIGHT", page_icon="📊")
+st.markdown(f"**Phase 2**) 
 
 # --- CUSTOM CSS (SIDEBAR, TABS, & AFFINITY DARK MODE) ---
 # --- CUSTOM CSS (SIDEBAR, TABS, & AFFINITY DARK MODE) ---
@@ -861,7 +862,7 @@ def main():
         with col_sec: 
             # HAPUS ["ALL"] + dan gunakan index=start_idx
             sel_sec = st.selectbox("SECTION FILTER", sections_only, index=start_idx, key="sec_perf")
-        st.markdown(f"**Phase 2 [NOV 2026 - JAN 2026]**")
+        st.markdown(f"**[NOV 2026 - JAN 2026]**")
 
         st.markdown("---")
 
@@ -1039,7 +1040,7 @@ def main():
             st.markdown('<h1 style="margin:0;">🔄 SWITCHING & LOYALTY ANALYSIS</h1>', unsafe_allow_html=True)
         with col_sec_filter:
             sel_sec_sw = st.selectbox("SECTION FILTER", sections_only, index=start_idx, key="sec_sw_top")
-        st.markdown(f"**Phase 2 [NOV 2025 - DES 2026]**")
+        st.markdown(f"**[NOV 2025 - DES 2026]**")
 
         st.markdown("---")
         loy_data = load_loyalty_data()

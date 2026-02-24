@@ -24,7 +24,7 @@ div[data-testid="stSidebar"] .stRadio label {
 /* Tabel jadi padat mirip tampilan Excel yang kamu mau */
 div[data-testid="stDataFrame"] td, 
 div[data-testid="stDataFrame"] th {
-    font-size: 11px !important;
+    font-size: 8px !important;
     padding: 3px 6px !important;
 }
 

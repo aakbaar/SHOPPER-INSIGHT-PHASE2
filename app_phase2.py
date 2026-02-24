@@ -2,6 +2,43 @@ import streamlit as st
 
 st.markdown("""
 <style>
+
+/* Kurangi padding atas & bawah halaman */
+.main .block-container {
+    padding-top: 0.8rem;
+    padding-bottom: 0.8rem;
+    max-width: 100%;
+}
+
+/* Perkecil semua font sedikit */
+html, body, [class*="css"]  {
+    font-size: 14px !important;
+}
+
+/* Perkecil title agar tidak terlalu besar */
+h1 {
+    font-size: 28px !important;
+}
+
+h2 {
+    font-size: 22px !important;
+}
+
+/* Perkecil card container spacing */
+div[data-testid="stHorizontalBlock"] > div {
+    padding: 6px !important;
+}
+
+/* Dataframe lebih rapat */
+div[data-testid="stDataFrame"] table {
+    font-size: 13px !important;
+}
+
+/* Selectbox lebih ramping */
+div[data-baseweb="select"] > div {
+    min-height: 38px !important;
+}
+
 /* Sticky first column for dataframe */
 div[data-testid="stDataFrame"] table {
     border-collapse: separate !important;

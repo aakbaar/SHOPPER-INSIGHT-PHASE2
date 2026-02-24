@@ -3,7 +3,15 @@ import streamlit as st
 st.markdown("""
 <style>
 @media screen and (max-width:1366px){
-    html { zoom: 75%; }
+
+    html {
+        zoom: 0.80;
+    }
+
+    section[data-testid="stSidebar"] {
+        zoom: 1 !important;
+    }
+
 }
 div[data-testid="stDataFrame"] table th:first-child,
 div[data-testid="stDataFrame"] table td:first-child {

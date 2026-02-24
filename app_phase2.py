@@ -2,7 +2,12 @@ import streamlit as st
 
 st.markdown("""
 <style>
-
+/* Jika lebar layar <= 1366px (laptop 13-14 inch) */
+@media screen and (max-width: 1366px) {
+    html {
+        zoom: 75%;
+    }
+}
 div[data-testid="stDataFrame"] table th:first-child,
 div[data-testid="stDataFrame"] table td:first-child {
     position: sticky;

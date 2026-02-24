@@ -10,8 +10,8 @@ st.markdown("""
 
 /* Judul Sidebar */
 .sidebar-title-custom {
-    font-size: 10px !important; 
-    margin-bottom: 5px !important;
+    font-size: 15px !important; 
+    margin-bottom: 10px !important;
 }
 
 /* Menu Radio Sidebar */

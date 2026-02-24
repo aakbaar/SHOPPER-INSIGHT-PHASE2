@@ -214,20 +214,7 @@ def load_segment_unified():
 @st.cache_data
 def load_loyalty_data():
     try:
-        import glob
         import pandas as pd
-
-        # Gabungkan CATEGORY_LOYALTY_part
-        cat_loy_files = sorted(glob.glob("CATEGORY_LOYALTY_part*.csv"))
-
-        if not cat_loy_files:
-            st.error("CATEGORY_LOYALTY_part files tidak ditemukan")
-            return {}
-
-        cat_loy_df = pd.concat(
-            [pd.read_csv(f) for f in cat_loy_files],
-            ignore_index=True
-        )
 
         return {
             "br_loy_cat": pd.read_csv("BRAND_LOYALTY_CATEGORY_PHASE2.csv"),

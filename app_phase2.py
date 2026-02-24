@@ -2,22 +2,14 @@ import streamlit as st
 
 st.markdown("""
 <style>
-/* ======================================
-   GLOBAL ZOOM (COMPACT MODE)
-====================================== */
-html {
-    zoom: 75%;
-}
-
-/* ======================================
-   SIDEBAR FIX WIDTH
-====================================== */
+/* LOCK WIDTH SIDEBAR */
 section[data-testid="stSidebar"] {
     width: 280px !important;
     min-width: 280px !important;
     max-width: 280px !important;
 }
 
+/* Isi sidebar jangan ikut stretch */
 section[data-testid="stSidebar"] > div {
     width: 280px !important;
 }
@@ -27,56 +19,35 @@ div[data-testid="stSidebar"] .stRadio label {
     width: auto !important;
     display: inline-block !important;
 }
-
-/* ======================================
-   MAIN CONTENT STABLE
-====================================== */
-.main .block-container {
-    padding-left: 2rem;
-    padding-right: 2rem;
-    padding-bottom: 3rem;
-    max-width: 100%;
-}
-
-/* ======================================
-   DATAFRAME FIX (NO SHIFT)
-====================================== */
+/* TABLE FIX WIDTH */
+/* TABLE FIX WIDTH */
 div[data-testid="stDataFrame"] {
     overflow-x: auto !important;
 }
 
+/* table tidak stretch */
 div[data-testid="stDataFrame"] table {
     width: max-content !important;
-    border-collapse: separate;
 }
 
-/* Sticky first column stabil */
-div[data-testid="stDataFrame"] th:first-child {
-    position: sticky;
-    left: 0;
-    background: white;
-    z-index: 5;
-}
-
+/* freeze first column tetap aman */
+div[data-testid="stDataFrame"] th:first-child,
 div[data-testid="stDataFrame"] td:first-child {
     position: sticky;
     left: 0;
     background: white;
-    z-index: 4;
+    z-index: 3;
 }
 
-/* ======================================
-   CHART FIX
-====================================== */
-div[data-testid="stPlotlyChart"] {
-    width: 100% !important;
+/* MAIN AREA STABIL */
+.main .block-container {
+    padding-left: 2rem;
+    padding-right: 2rem;
+    max-width: 100%;
 }
 
-/* ======================================
-   PREVENT BOTTOM CUT
-====================================== */
-section.main > div {
-    padding-bottom: 60px;
+html {
+    zoom: 75%;
 }
 /* Sticky first column for dataframe */
 div[data-testid="stDataFrame"] table {

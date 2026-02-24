@@ -26,8 +26,8 @@ h3 { font-size: 18px; }
 /* ========================= */
 
 div[data-testid="metric-container"] {
-    padding: 10px 14px;
-    border-radius: 10px;
+    padding: 10px 10px;
+    border-radius: 8px;
 }
 
 /* ========================= */

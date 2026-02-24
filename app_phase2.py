@@ -933,6 +933,14 @@ def render_category_promo_share_chart(df):
 
 def main():
     global df_p 
+    df_section_source = load_perf_file("category", "V1")
+
+    if df_section_source.empty or "SECTION" not in df_section_source.columns:
+        sections_only = []
+    else:
+        sections_only = sorted(df_section_source["SECTION"].dropna().unique().tolist())
+
+    start_idx = 0
 
     st.sidebar.markdown("""
     <p class="sidebar-title-custom">

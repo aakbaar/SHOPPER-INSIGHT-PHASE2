@@ -222,8 +222,8 @@ st.markdown("""
     
     .block-container {
         max-width: 100% !important;
-        padding-left: 2rem !important;
-        padding-right: 2rem !important;
+        padding-left: 10rem !important;
+        padding-right: 10rem !important;
     }
 
     /* Paksa area utama melebar */

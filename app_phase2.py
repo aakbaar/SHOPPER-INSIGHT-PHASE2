@@ -208,13 +208,13 @@ st.markdown("""
         padding: 6px;
         gap: 0px; /* Gap dinolkan agar sekat terlihat menyambung */
         border: 1px solid #DFE1E5;
-        margin-bottom: 22px;
+        margin-bottom: 20px;
         display: flex;
         align-items: center;
     }
 
     .stTabs [data-baseweb="tab"] {
-        height: 35px;
+        height: 30px;
         background-color: transparent !important;
         border-radius: 0px !important; /* Kotak agar sekat konsisten */
         border: none !important;

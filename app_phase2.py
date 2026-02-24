@@ -828,7 +828,7 @@ def main():
         <span style="
             font-size:14px;
             font-weight:500;
-            color:#94A3B8;
+            color:#000000;
             letter-spacing:1px;
         ">
             PHASE 2

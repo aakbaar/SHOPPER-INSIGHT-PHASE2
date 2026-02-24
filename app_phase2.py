@@ -199,7 +199,7 @@ st.markdown("""
 # --- 1. DATA LOADERS ---
 @st.cache_data
 def load_perf_file(level, versi):
-    filename = f"perf_{level}_{versi.lower()}.csv"
+    filename = f"perf_{level}_phase2_{versi.lower()}.csv"
     if os.path.exists(filename):
         mtime = os.path.getmtime(filename)
         return pd.read_csv(filename)

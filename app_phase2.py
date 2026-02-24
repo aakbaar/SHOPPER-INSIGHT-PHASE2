@@ -14,7 +14,7 @@ st.markdown("""
 /* ========================= */
 
 html, body, [class*="css"]  {
-    font-size: 12px;
+    font-size: 14px;
 }
 
 h1 { font-size: 26px; }

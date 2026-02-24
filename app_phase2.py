@@ -475,6 +475,7 @@ def reorder_final(df, level):
     
     # Gabungkan semua dengan urutan yang sudah dipatenkan
     return df[existing_ids + existing_metrics + others]
+df_p = pd.DataFrame()
 
 def render_affinity_tab(df, col_a, col_b, filter_cols, key_prefix, show_qty_impact=True, extra_display_cols=[]):
     """

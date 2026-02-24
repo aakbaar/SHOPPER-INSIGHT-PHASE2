@@ -2,9 +2,6 @@ import streamlit as st
 
 st.markdown("""
 <style>
-@media screen and (max-width:1366px){
-    html { zoom: 90%; }
-}
 /* Kecilkan lebar layout utama */
 .block-container {
     max-width: 3500px;

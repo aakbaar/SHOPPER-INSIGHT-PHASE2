@@ -2,52 +2,33 @@ import streamlit as st
 
 st.markdown("""
 <style>
-/* 1. MENGECILKAN AREA UTAMA (Margin & Padding) */
+/* 1. Zoom Global tapi tetap stabil */
+html {
+    zoom: 80%; /* Atur persentase zoom di sini */
+}
+
+/* 2. Kunci lebar Sidebar agar tidak ikut goyang saat zoom */
+section[data-testid="stSidebar"] {
+    width: 250px !important;
+    min-width: 250px !important;
+}
+
+/* 3. FIX: Menjaga posisi tabel dan konten utama */
 .main .block-container {
-    padding-top: 1rem !important;
-    padding-bottom: 0rem !important;
-    max-width: 98% !important; /* Memperlebar area konten */
+    max-width: 95% !important;
+    padding-left: 2rem !important;
+    padding-right: 2rem !important;
+    margin: 0 auto !important;
 }
 
-/* 2. MENGECILKAN TABEL (Font & Baris) */
-/* Ini akan membuat tabel terlihat mungil seperti di gambar kedua */
-div[data-testid="stDataFrame"] td, 
-div[data-testid="stDataFrame"] th {
-    font-size: 10.5px !important;
-    padding: 2px 4px !important;
-    line-height: 1 !important;
-}
-
-/* Membatasi tinggi tabel agar tidak terlalu memanjang */
+/* 4. Mencegah dataframe "melayang" atau berubah ukuran liar */
 div[data-testid="stDataFrame"] {
-    max-height: 400px !important;
+    width: 100% !important;
 }
 
-/* 3. MENGECILKAN KARTU METRIK (KPI) */
-[data-testid="stMetricValue"] {
-    font-size: 1.5rem !important; /* Ukuran angka (misal: 8.91%) */
-    font-weight: 700 !important;
-}
-[data-testid="stMetricLabel"] {
-    font-size: 0.75rem !important; /* Ukuran teks label */
-}
-[data-testid="stMetricDelta"] {
-    font-size: 0.7rem !important; /* Ukuran persentase pertumbuhan */
-}
-
-/* 4. MENGECILKAN FILTER & DROPDOWN */
-div[data-baseweb="select"] {
-    font-size: 11px !important;
-    min-height: 30px !important;
-}
-
-/* 5. SIDEBAR LEBIH RAMPING */
-[data-testid="stSidebar"] {
-    min-width: 180px !important;
-    max-width: 220px !important;
-}
-.sidebar-title-custom {
-    font-size: 20px !important;
+/* 5. Menghilangkan spasi putih berlebih di atas */
+.stApp {
+    margin-top: -50px !important;
 }
 div[data-testid="stDataFrame"] table th:first-child,
 div[data-testid="stDataFrame"] table td:first-child {

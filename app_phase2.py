@@ -2,55 +2,18 @@ import streamlit as st
 
 st.markdown("""
 <style>
-/* 2. PERSEMPIT SIDEBAR & KECILKAN MENU */
-[data-testid="stSidebar"] {
-    min-width: 200px !important;
-    max-width: 240px !important;
+/* Scale seluruh app jadi 75% */
+.main > div {
+    transform: scale(0.75);
+    transform-origin: top left;
+    width: 133.33%;   /* kompensasi agar tidak terpotong */
 }
 
-/* Judul Sidebar */
-.sidebar-title-custom {
-    font-size: 22px !important; 
-    margin-bottom: 15px !important;
+/* Sidebar tetap normal (tidak ikut mengecil) */
+section[data-testid="stSidebar"] {
+    transform: none !important;
 }
 
-/* Menu Radio Sidebar */
-div[data-testid="stSidebar"] .stRadio label {
-    padding: 6px 12px !important;
-    font-size: 13px !important;
-}
-
-/* 3. KECILKAN TABEL (Font & Jarak Baris) */
-/* Tabel jadi padat mirip tampilan Excel yang kamu mau */
-div[data-testid="stDataFrame"] td, 
-div[data-testid="stDataFrame"] th {
-    font-size: 11px !important;
-    padding: 3px 6px !important;
-}
-
-/* 4. KECILKAN KARTU KPI (Metric) */
-[data-testid="stMetricValue"] {
-    font-size: 1.6rem !important; /* Angka utama */
-}
-[data-testid="stMetricLabel"] {
-    font-size: 0.8rem !important; /* Label atas */
-}
-[data-testid="stMetricDelta"] {
-    font-size: 0.75rem !important; /* Angka growth */
-}
-
-/* 5. FIX KONTAINER: Jaga jarak atas tetap stabil */
-.main .block-container {
-    padding-top: 2rem !important; /* Jarak aman dari atas */
-    padding-left: 2rem !important;
-    padding-right: 2rem !important;
-    max-width: 98% !important;
-}
-
-/* Kecilkan tinggi Filter Dropdown */
-div[data-baseweb="select"] {
-    font-size: 12px !important;
-}
 div[data-testid="stDataFrame"] table th:first-child,
 div[data-testid="stDataFrame"] table td:first-child {
     position: sticky;

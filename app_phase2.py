@@ -832,6 +832,24 @@ def main():
     except NameError:
         st.error("Variabel 'df_p' tidak ditemukan. Pastikan data performance sudah di-load di awal file.")
         return
+    st.sidebar.markdown("""
+    <a href="https://shopper-insight.streamlit.app//" target="_blank">
+        <button style="
+            width:100%;
+            background: linear-gradient(135deg, #FF0000, #CC0000);
+            color:white;
+            border:none;
+            padding:12px;
+            border-radius:12px;
+            font-weight:600;
+            font-size:14px;
+            cursor:pointer;
+            box-shadow: 0 4px 10px rgba(255,0,0,0.25);
+        ">
+            Shopper Insight Phase 1
+        </button>
+    </a>
+    """, unsafe_allow_html=True)
 
     if menu == "📈 PERFORMANCE":
         col_title, col_plano, col_sec = st.columns([5, 2.5, 2.5])

@@ -2,33 +2,37 @@ import streamlit as st
 
 st.markdown("""
 <style>
-/* 1. Zoom Global tapi tetap stabil */
+/* 1. Paksa Zoom Global */
 html {
-    zoom: 80%; /* Atur persentase zoom di sini */
+    zoom: 75%;
 }
 
-/* 2. Kunci lebar Sidebar agar tidak ikut goyang saat zoom */
-section[data-testid="stSidebar"] {
-    width: 250px !important;
+/* 2. FIX: Kunci Kontainer Utama agar tidak naik/geser */
+.main .block-container {
+    padding-top: 5rem !important; /* Tambahkan jarak atas yang pasti */
+    max-width: 98% !important;
+    margin-top: 0px !important; /* Pastikan tidak ada margin negatif yang narik ke atas */
+}
+
+/* 3. FIX: Stabilkan elemen Sidebar */
+[data-testid="stSidebar"] {
     min-width: 250px !important;
 }
 
-/* 3. FIX: Menjaga posisi tabel dan konten utama */
-.main .block-container {
-    max-width: 95% !important;
-    padding-left: 2rem !important;
-    padding-right: 2rem !important;
-    margin: 0 auto !important;
-}
-
-/* 4. Mencegah dataframe "melayang" atau berubah ukuran liar */
+/* 4. Kunci Tinggi Dataframe agar tidak 'menciut' */
 div[data-testid="stDataFrame"] {
-    width: 100% !important;
+    height: 500px !important;
+    overflow: auto !important;
 }
 
-/* 5. Menghilangkan spasi putih berlebih di atas */
-.stApp {
-    margin-top: -50px !important;
+/* 5. Hilangkan spasi liar di antara elemen */
+.element-container {
+    margin-bottom: 10px !important;
+}
+
+/* Jika masih ada area putih besar di bawah header */
+header[data-testid="stHeader"] {
+    background: transparent !important;
 }
 div[data-testid="stDataFrame"] table th:first-child,
 div[data-testid="stDataFrame"] table td:first-child {

@@ -523,7 +523,6 @@ def render_affinity_tab(df, col_a, col_b, filter_cols, key_prefix, show_qty_impa
 
     # 4️⃣ fallback terakhir (aman agar tidak 0)
     if not total_trans or total_trans <= 0:
-        st.warning("Universe transaksi fallback digunakan.")
         total_trans = df['trans_a'].max() if 'trans_a' in df.columns else 1
             
     # Pastikan total_trans tidak nol agar tidak pembagian nol

@@ -819,8 +819,22 @@ def main():
     # Cari index pertama yang huruf depannya 'B' (Default ke 0 jika tidak ada)
     start_idx = next((i for i, s in enumerate(sections_only) if str(s).startswith('B')), 0)
 
-    st.sidebar.markdown('<p class="sidebar-title-custom">SHOPPER<br>CATEGORY<br>INSIGHT</p>', unsafe_allow_html=True)
-    st.markdown(f"**[NOV 2026 - JAN 2026]**")
+    st.sidebar.markdown("""
+    <p class="sidebar-title-custom">
+        SHOPPER<br>
+        CATEGORY<br>
+        INSIGHT
+        <br>
+        <span style="
+            font-size:14px;
+            font-weight:500;
+            color:#94A3B8;
+            letter-spacing:1px;
+        ">
+            PHASE 2
+        </span>
+    </p>
+    """, unsafe_allow_html=True)
     
     st.sidebar.markdown("<br>", unsafe_allow_html=True)
 

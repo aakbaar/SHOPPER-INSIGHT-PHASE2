@@ -2,36 +2,6 @@ import streamlit as st
 
 st.markdown("""
 <style>
-/* FIX: container sidebar agar tidak ikut membesar */
-section[data-testid="stSidebar"] > div {
-    padding-bottom: 0px !important;
-}
-
-/* FIX: hilangkan block putih di bawah tombol */
-section[data-testid="stSidebar"] div.stMarkdown {
-    margin-bottom: 0px !important;
-}
-
-/* FIX: tombol tidak dorong layout sidebar */
-section[data-testid="stSidebar"] a {
-    display: inline-block !important;
-}
-
-/* Default tetap normal */
-html {
-    zoom: 100%;
-}
-/* stop dataframe shifting */
-div[data-testid="stDataFrame"] {
-    overflow: auto !important;
-}
-
-/* Jika lebar layar <= 1366px (laptop 13-14 inch) */
-@media screen and (max-width: 1366px) {
-    html {
-        zoom: 75%;
-    }
-}
 div[data-testid="stDataFrame"] table th:first-child,
 div[data-testid="stDataFrame"] table td:first-child {
     position: sticky;

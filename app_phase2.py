@@ -2,37 +2,54 @@ import streamlit as st
 
 st.markdown("""
 <style>
-/* 1. Paksa Zoom Global */
-html {
-    zoom: 75%;
-}
-
-/* 2. FIX: Kunci Kontainer Utama agar tidak naik/geser */
-.main .block-container {
-    padding-top: 5rem !important; /* Tambahkan jarak atas yang pasti */
-    max-width: 98% !important;
-    margin-top: 0px !important; /* Pastikan tidak ada margin negatif yang narik ke atas */
-}
-
-/* 3. FIX: Stabilkan elemen Sidebar */
+/* 2. PERSEMPIT SIDEBAR & KECILKAN MENU */
 [data-testid="stSidebar"] {
-    min-width: 250px !important;
+    min-width: 200px !important;
+    max-width: 240px !important;
 }
 
-/* 4. Kunci Tinggi Dataframe agar tidak 'menciut' */
-div[data-testid="stDataFrame"] {
-    height: 500px !important;
-    overflow: auto !important;
+/* Judul Sidebar */
+.sidebar-title-custom {
+    font-size: 22px !important; 
+    margin-bottom: 15px !important;
 }
 
-/* 5. Hilangkan spasi liar di antara elemen */
-.element-container {
-    margin-bottom: 10px !important;
+/* Menu Radio Sidebar */
+div[data-testid="stSidebar"] .stRadio label {
+    padding: 6px 12px !important;
+    font-size: 13px !important;
 }
 
-/* Jika masih ada area putih besar di bawah header */
-header[data-testid="stHeader"] {
-    background: transparent !important;
+/* 3. KECILKAN TABEL (Font & Jarak Baris) */
+/* Tabel jadi padat mirip tampilan Excel yang kamu mau */
+div[data-testid="stDataFrame"] td, 
+div[data-testid="stDataFrame"] th {
+    font-size: 11px !important;
+    padding: 3px 6px !important;
+}
+
+/* 4. KECILKAN KARTU KPI (Metric) */
+[data-testid="stMetricValue"] {
+    font-size: 1.6rem !important; /* Angka utama */
+}
+[data-testid="stMetricLabel"] {
+    font-size: 0.8rem !important; /* Label atas */
+}
+[data-testid="stMetricDelta"] {
+    font-size: 0.75rem !important; /* Angka growth */
+}
+
+/* 5. FIX KONTAINER: Jaga jarak atas tetap stabil */
+.main .block-container {
+    padding-top: 2rem !important; /* Jarak aman dari atas */
+    padding-left: 2rem !important;
+    padding-right: 2rem !important;
+    max-width: 98% !important;
+}
+
+/* Kecilkan tinggi Filter Dropdown */
+div[data-baseweb="select"] {
+    font-size: 12px !important;
 }
 div[data-testid="stDataFrame"] table th:first-child,
 div[data-testid="stDataFrame"] table td:first-child {

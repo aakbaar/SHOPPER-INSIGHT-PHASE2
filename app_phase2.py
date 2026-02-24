@@ -2,8 +2,82 @@ import streamlit as st
 
 st.markdown("""
 <style>
-/* Jika lebar layar <= 1366px (laptop 13-14 inch) */ @media screen and (max-width: 1366px) { html { zoom: 80%; } }
-            
+/* ======================================
+   GLOBAL ZOOM (COMPACT MODE)
+====================================== */
+html {
+    zoom: 75%;
+}
+
+/* ======================================
+   SIDEBAR FIX WIDTH
+====================================== */
+section[data-testid="stSidebar"] {
+    width: 280px !important;
+    min-width: 280px !important;
+    max-width: 280px !important;
+}
+
+section[data-testid="stSidebar"] > div {
+    width: 280px !important;
+}
+
+/* Radio button tidak full horizontal */
+div[data-testid="stSidebar"] .stRadio label {
+    width: auto !important;
+    display: inline-block !important;
+}
+
+/* ======================================
+   MAIN CONTENT STABLE
+====================================== */
+.main .block-container {
+    padding-left: 2rem;
+    padding-right: 2rem;
+    padding-bottom: 3rem;
+    max-width: 100%;
+}
+
+/* ======================================
+   DATAFRAME FIX (NO SHIFT)
+====================================== */
+div[data-testid="stDataFrame"] {
+    overflow-x: auto !important;
+}
+
+div[data-testid="stDataFrame"] table {
+    width: max-content !important;
+    border-collapse: separate;
+}
+
+/* Sticky first column stabil */
+div[data-testid="stDataFrame"] th:first-child {
+    position: sticky;
+    left: 0;
+    background: white;
+    z-index: 5;
+}
+
+div[data-testid="stDataFrame"] td:first-child {
+    position: sticky;
+    left: 0;
+    background: white;
+    z-index: 4;
+}
+
+/* ======================================
+   CHART FIX
+====================================== */
+div[data-testid="stPlotlyChart"] {
+    width: 100% !important;
+}
+
+/* ======================================
+   PREVENT BOTTOM CUT
+====================================== */
+section.main > div {
+    padding-bottom: 60px;
+}
 /* Sticky first column for dataframe */
 div[data-testid="stDataFrame"] table {
     border-collapse: separate !important;

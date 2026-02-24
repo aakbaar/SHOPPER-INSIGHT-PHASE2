@@ -502,31 +502,29 @@ def render_affinity_tab(df, col_a, col_b, filter_cols, key_prefix, show_qty_impa
         if col in df.columns:
             df[col] = pd.to_numeric(df[col], errors='coerce').fillna(0)
 
-    # 2. Penentuan Total Transaksi (Wajib Benar)
-   # 2. Penentuan Total Transaksi (Strict & Unique Only)
+    # ==========================================
+    # PENENTUAN TOTAL TRANSAKSI (FIXED VERSION)
+    # ==========================================
     epsilon = 1e-9
-    
-    # Prioritas 1: Cek apakah angka total transaksi sudah tertanam di dataset affinity
+
+    total_trans = None
+
+    # 1️⃣ Jika sudah ada di file affinity
     if 'total_transactions' in df.columns:
         total_trans = df['total_transactions'].iloc[0]
-    
-    # Prioritas 2: Cek variabel global 'total_struk_global' (Hasil nunique di fungsi main)
+
+    # 2️⃣ Jika global tersedia
     elif 'total_struk_global' in globals():
         total_trans = total_struk_global
-        
-    # Prioritas 3: Cek langsung ke dataframe performa (df_p) untuk kolom unik
-    else:
-        try:
-            if 'no_struk' in df_p.columns:
-                total_trans = df_p['no_struk'].nunique()
-            elif 'buyer_id' in df_p.columns:
-                total_trans = df_p['buyer_id'].nunique()
-            else:
-                # Jika tidak ada satupun sumber angka unik, kirim pesan ke user
-                st.warning("⚠️ *Data transaksi unik tidak ditemukan. Pastikan data mentah di-load.*")
-                total_trans = 0 # Akan menghasilkan skor 0, bukan skor palsu yang membengkak
-        except:
-            total_trans = 0
+
+    # 3️⃣ Jika performa punya buyer count
+    elif 'BUYER_COUNT_BEFORE' in df_p.columns:
+        total_trans = df_p['BUYER_COUNT_BEFORE'].sum()
+
+    # 4️⃣ fallback terakhir (aman agar tidak 0)
+    if not total_trans or total_trans <= 0:
+        st.warning("Universe transaksi fallback digunakan.")
+        total_trans = df['trans_a'].max() if 'trans_a' in df.columns else 1
             
     # Pastikan total_trans tidak nol agar tidak pembagian nol
     if total_trans <= 0:

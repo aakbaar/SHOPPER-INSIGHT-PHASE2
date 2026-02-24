@@ -2,40 +2,7 @@ import streamlit as st
 
 st.markdown("""
 <style>
-/* 1. Fix Zoom & Layout Stability */
-html {
-    zoom: 75%;
-    height: 100%;
-}
 
-body {
-    overflow-x: hidden;
-}
-
-/* 2. Fix Container agar tidak naik/geser */
-.main .block-container {
-    padding-top: 2rem !important; /* Jaga jarak atas tetap konsisten */
-    max-width: 100% !important;
-}
-
-/* 3. FIX TABEL: Paksa tinggi dan hilangkan pergerakan liar */
-div[data-testid="stDataFrame"], 
-div[data-testid="stDataEditor"] {
-    height: 600px !important; /* Tentukan tinggi fix dalam pixel */
-    overflow: auto !important;
-    border: 1px solid #DFE1E5;
-    border-radius: 8px;
-}
-
-/* Fix untuk sticky column agar tidak offset saat zoom */
-div[data-testid="stDataFrame"] [data-testid="stTable"] {
-    width: 100% !important;
-}
-
-/* 4. Menghilangkan margin ekstra di bawah elemen */
-.element-container {
-    margin-bottom: 0px !important;
-}
 div[data-testid="stDataFrame"] table th:first-child,
 div[data-testid="stDataFrame"] table td:first-child {
     position: sticky;

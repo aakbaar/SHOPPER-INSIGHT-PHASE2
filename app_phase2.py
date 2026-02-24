@@ -121,7 +121,7 @@ st.markdown("""
 
     /* Judul Sidebar Custom */
     .sidebar-title-custom {
-        font-size: 35px !important; 
+        font-size: 30px !important; 
         
         font-weight: 800;
         color: #1E293B;

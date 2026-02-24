@@ -2,13 +2,28 @@ import streamlit as st
 
 st.markdown("""
 <style>
+
+/* Default desktop normal */
+html {
+    font-size: 100%;
+}
+
+/* Laptop 13–14 inch auto scale 75% */
 @media screen and (max-width: 1366px) {
+
+    /* Scale seluruh main app */
     .main > div {
         transform: scale(0.75);
         transform-origin: top left;
-        width: 133.33%;
+        width: 133.33%;  /* supaya tidak kepotong kanan */
+    }
+
+    /* Sidebar tetap normal */
+    section[data-testid="stSidebar"] {
+        transform: none !important;
     }
 }
+
 div[data-testid="stDataFrame"] table th:first-child,
 div[data-testid="stDataFrame"] table td:first-child {
     position: sticky;

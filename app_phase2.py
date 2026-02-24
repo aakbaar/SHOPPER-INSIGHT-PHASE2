@@ -17,10 +17,6 @@ section[data-testid="stSidebar"] a {
     display: inline-block !important;
 }
 
-/* FIX paling penting: stop sidebar container grow */
-section[data-testid="stSidebar"] {
-    overflow: hidden !important;
-}
 /* Default tetap normal */
 html {
     zoom: 100%;
@@ -42,11 +38,6 @@ div[data-testid="stDataFrame"] {
         zoom: 75%;
     }
 }
-/* Sticky first column for dataframe */
-div[data-testid="stDataFrame"] table {
-    border-collapse: separate !important;
-}
-
 div[data-testid="stDataFrame"] table th:first-child,
 div[data-testid="stDataFrame"] table td:first-child {
     position: sticky;

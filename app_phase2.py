@@ -1,5 +1,10 @@
 import streamlit as st
 
+st.set_page_config(
+    page_title="SHOPPER INSIGHT",
+    layout="wide"
+)
+
 st.markdown("""
 <style>
 /* Default tetap normal */
@@ -902,6 +907,7 @@ def main():
             if df.empty: return df
             if sel_sec != "ALL": df = df[df["SECTION"] == sel_sec]
             return df.reset_index(drop=True)
+        
 
         with t_cat:
             df_f = apply_filter(load_perf_file("category", sel_plano))
@@ -1081,20 +1087,91 @@ def main():
                         df_raw = df_raw[df_raw["SECTION"] == sel_sec_sw]
 
                     # --- ROW 1: FILTERS (Single Select with "ALL" Option) ---
-                    col_ratios = [3] * len(cfg["filters"]) + [4] 
-                    col_filters = st.columns(col_ratios)
-                    
-                    for j, filt_col in enumerate(cfg["filters"]):
+                    extra_after_filter = None
+
+                    if cfg["name"] in ["BRAND LOYALTY (CAT)", "BRAND LOYALTY (SUBCAT)"]:
+                        extra_after_filter = "BRAND_AFTER"
+
+                    elif cfg["name"] in ["BRAND SWITCH (CAT)", "CATEGORY SWITCHING"]:
+                        extra_after_filter = "CATEGORY_AFTER"
+
+                    elif cfg["name"] in ["BRAND SWITCH (SUBCAT)", "SUBCATEGORY SWITCHING"]:
+                        extra_after_filter = "SUBCATEGORY_AFTER"
+
+
+                    # Gabungkan filter existing + filter AFTER
+                    all_filters = cfg["filters"].copy()
+                    if extra_after_filter:
+                        all_filters.append(extra_after_filter)
+
+                    # Buat layout horizontal
+                    # filter bar full width
+                    col_filters = st.columns([1]*len(all_filters), gap="large")
+
+                    # CSS: popover full width kolom
+                    st.markdown("""
+                    <style>
+                    /* popover full width */
+                    div[data-testid="stPopover"] {
+                        width: 100% !important;
+                    }
+
+                    div[data-testid="stPopover"] > div {
+                        width: 100% !important;
+                        min-width: 400px !important;
+                    }
+
+                    /* isi popover lebih lega */
+                    div[data-baseweb="popover"] {
+                        padding: 14px !important;
+                    }
+                    </style>
+                    """, unsafe_allow_html=True)
+
+                    active_filters = {}
+
+                    for j, filt_col in enumerate(all_filters):
                         with col_filters[j]:
                             if filt_col in df_raw.columns:
-                                # Menambahkan opsi "ALL" di urutan paling atas
-                                unique_vals = ["ALL"] + sorted(df_raw[filt_col].dropna().unique().tolist())
-                                
-                                sel_val = st.selectbox(f"{filt_col}:", unique_vals, key=f"sb_sw_{i}_{j}")
-                                
-                                # Filter hanya berjalan jika user tidak memilih "ALL"
-                                if sel_val != "ALL":
-                                    df_raw = df_raw[df_raw[filt_col] == sel_val]
+
+                                unique_vals = sorted(df_raw[filt_col].dropna().unique().tolist())
+                                item_keys = [f"chk_sw_{i}_{j}_{val}" for val in unique_vals]
+
+                                # INIT default checked
+                                for k in item_keys:
+                                    if k not in st.session_state:
+                                        st.session_state[k] = True
+
+                                label = f"{filt_col}:"
+                                with st.popover(label):
+
+                                    colA, colB = st.columns(2)
+
+                                    # SELECT ALL
+                                    with colA:
+                                        if st.button("Select All", key=f"btn_all_{i}_{j}"):
+                                            for k in item_keys:
+                                                st.session_state[k] = True
+
+                                    # CLEAR ALL
+                                    with colB:
+                                        if st.button("Clear All", key=f"btn_clear_{i}_{j}"):
+                                            for k in item_keys:
+                                                st.session_state[k] = False
+
+                                    selected_vals = []
+
+                                    for val in unique_vals:
+                                        k = f"chk_sw_{i}_{j}_{val}"
+                                        if st.checkbox(val, key=k):
+                                            selected_vals.append(val)
+
+                                # simpan state filter
+                                active_filters[filt_col] = selected_vals
+
+                                # apply filter
+                                if selected_vals:
+                                    df_raw = df_raw[df_raw[filt_col].isin(selected_vals)]
 
                     if df_raw.empty:
                         st.warning("No data available for this filter.")

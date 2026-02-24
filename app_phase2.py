@@ -1617,7 +1617,20 @@ def main():
                 # 🔧 NORMALISASI KOLOM
                 df_f.columns = df_f.columns.str.strip().str.lower()
 
-                # 🔎 VALIDASI KOLOM WAJIB
+                # NORMALISASI NAMA KOLOM BRAND
+                rename_map = {}
+
+                for col in df_f.columns:
+                    c = col.lower().replace(" ", "").replace("-", "").replace(".", "")
+                    
+                    if c in ["branda", "brandbefore", "brand_a"]:
+                        rename_map[col] = "brand_a"
+                    elif c in ["brandb", "brandafter", "brand_b"]:
+                        rename_map[col] = "brand_b"
+
+                df_f = df_f.rename(columns=rename_map)
+
+                # VALIDASI ULANG
                 required_cols = {"brand_a", "brand_b"}
                 if not required_cols.issubset(df_f.columns):
                     st.error(f"Kolom tidak ditemukan! Kolom tersedia: {df_f.columns.tolist()}")
@@ -1656,7 +1669,20 @@ def main():
                 # 🔧 NORMALISASI KOLOM
                 df_f.columns = df_f.columns.str.strip().str.lower()
 
-                # 🔎 VALIDASI KOLOM
+                # NORMALISASI NAMA KOLOM BRAND
+                rename_map = {}
+
+                for col in df_f.columns:
+                    c = col.lower().replace(" ", "").replace("-", "").replace(".", "")
+                    
+                    if c in ["branda", "brandbefore", "brand_a"]:
+                        rename_map[col] = "brand_a"
+                    elif c in ["brandb", "brandafter", "brand_b"]:
+                        rename_map[col] = "brand_b"
+
+                df_f = df_f.rename(columns=rename_map)
+
+                # VALIDASI ULANG
                 required_cols = {"brand_a", "brand_b"}
                 if not required_cols.issubset(df_f.columns):
                     st.error(f"Kolom tidak ditemukan! Kolom tersedia: {df_f.columns.tolist()}")

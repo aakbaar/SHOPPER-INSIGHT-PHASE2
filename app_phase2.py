@@ -1355,13 +1355,13 @@ def main():
 
                     # Buat layout horizontal
                     # filter bar full width
-                    col_filters = st.columns([0.2] + [1]*len(all_filters), gap="small")
+                    col_filters = st.columns([1]*len(all_filters), gap="large")
 
 
                     active_filters = {}
 
                     for j, filt_col in enumerate(all_filters):
-                        with col_filters[j+1]:
+                        with col_filters[j]:
                             if filt_col in df_raw.columns:
 
                                 unique_vals = sorted(df_raw[filt_col].dropna().unique().tolist())

@@ -1647,16 +1647,8 @@ def main():
                 df_f = normalize_brand_columns(df_f)
 
                 # Validasi isi brand
-                valid_brand = set(
-                    pd.concat([df_f["brand_a"], df_f["brand_b"]])
-                    .astype(str)
-                    .unique()
-                )
-
-                df_f = df_f[
-                    df_f["brand_a"].astype(str).isin(valid_brand) &
-                    df_f["brand_b"].astype(str).isin(valid_brand)
-                ].reset_index(drop=True)
+                # Hapus pasangan brand kosong / null
+                df_f = df_f.dropna(subset=["brand_a", "brand_b"]).reset_index(drop=True)
 
                 st.subheader(f"AFFINITY BRAND BY CATEGORY SECTION : {sel_sec_aff}")
 
@@ -1679,16 +1671,8 @@ def main():
                 # 🔥 NORMALISASI BRAND OTOMATIS
                 df_f = normalize_brand_columns(df_f)
 
-                valid_brand = set(
-                    pd.concat([df_f["brand_a"], df_f["brand_b"]])
-                    .astype(str)
-                    .unique()
-                )
-
-                df_f = df_f[
-                    df_f["brand_a"].astype(str).isin(valid_brand) &
-                    df_f["brand_b"].astype(str).isin(valid_brand)
-                ].reset_index(drop=True)
+                # Hapus pasangan brand kosong / null
+                df_f = df_f.dropna(subset=["brand_a", "brand_b"]).reset_index(drop=True)
 
                 st.subheader(f"AFFINITY BRAND BY SUBCATEGORY SECTION : {sel_sec_aff}")
 

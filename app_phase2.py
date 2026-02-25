@@ -1355,7 +1355,7 @@ def main():
 
                     # Buat layout horizontal
                     # filter bar full width
-                    col_filters = st.columns([0.8]*len(all_filters), gap="small")
+                    col_filters = st.columns([0.7]*len(all_filters), gap="small")
 
                     # CSS: popover full width kolom
                     st.markdown("""

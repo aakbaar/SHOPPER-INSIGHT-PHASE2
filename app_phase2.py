@@ -1358,56 +1358,50 @@ def main():
                     col_filters = st.columns([0.2] + [1]*len(all_filters), gap="small")
 
 
+                    st.markdown('<div class="filter-row">', unsafe_allow_html=True)
+
                     active_filters = {}
 
                     for j, filt_col in enumerate(all_filters):
-                        with col_filters[j+1]:
-                            if filt_col in df_raw.columns:
 
-                                unique_vals = sorted(df_raw[filt_col].dropna().unique().tolist())
-                                item_keys = [f"chk_sw_{i}_{j}_{val}" for val in unique_vals]
+                        if filt_col in df_raw.columns:
 
-                                # INIT default checked
-                                for k in item_keys:
-                                    if k not in st.session_state:
-                                        st.session_state[k] = True
+                            unique_vals = sorted(df_raw[filt_col].dropna().unique().tolist())
+                            item_keys = [f"chk_sw_{i}_{j}_{val}" for val in unique_vals]
 
-                                label = f"{filt_col}:"
-                                with st.popover(label):
+                            for k in item_keys:
+                                if k not in st.session_state:
+                                    st.session_state[k] = True
 
-                                    colA, colB = st.columns(2)
+                            label = f"{filt_col}"
 
-                                    # SELECT ALL
-                                    with colA:
-                                        if st.button("Select All", key=f"btn_all_{i}_{j}"):
-                                            for k in item_keys:
-                                                st.session_state[k] = True
+                            with st.popover(label):
 
-                                    # CLEAR ALL
-                                    with colB:
-                                        if st.button("Clear All", key=f"btn_clear_{i}_{j}"):
-                                            for k in item_keys:
-                                                st.session_state[k] = False
+                                colA, colB = st.columns(2)
 
-                                    selected_vals = []
+                                with colA:
+                                    if st.button("Select All", key=f"btn_all_{i}_{j}"):
+                                        for k in item_keys:
+                                            st.session_state[k] = True
 
-                                    for val in unique_vals:
-                                        k = f"chk_sw_{i}_{j}_{val}"
-                                        if st.checkbox(val, key=k):
-                                            selected_vals.append(val)
+                                with colB:
+                                    if st.button("Clear All", key=f"btn_clear_{i}_{j}"):
+                                        for k in item_keys:
+                                            st.session_state[k] = False
 
-                                # simpan state filter
-                                active_filters[filt_col] = selected_vals
+                                selected_vals = []
 
-                                # apply filter
-                                if selected_vals:
-                                    df_raw = df_raw[df_raw[filt_col].isin(selected_vals)]
+                                for val in unique_vals:
+                                    k = f"chk_sw_{i}_{j}_{val}"
+                                    if st.checkbox(val, key=k):
+                                        selected_vals.append(val)
 
-                    if df_raw.empty:
-                        st.warning("No data available for this filter.")
-                        continue
-                    
-                    st.markdown("<br>", unsafe_allow_html=True)
+                            active_filters[filt_col] = selected_vals
+
+                            if selected_vals:
+                                df_raw = df_raw[df_raw[filt_col].isin(selected_vals)]
+
+                    st.markdown('</div>', unsafe_allow_html=True)
 
                     # --- ROW 2: KPI CARDS ---
                     total_sw = df_raw[df_raw["SWITCH_FLAG"] == "SWITCH"]["BUYER_ID"].nunique()

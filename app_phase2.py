@@ -1643,11 +1643,14 @@ def main():
                 df_bc = aff["brand_cat"].copy()
                 df_f = filter_affinity_base(df_bc, sel_sec_aff, sel_plano)
 
+                # 🚨 STOP jika data kosong
+                if df_f.empty:
+                    st.warning("Data BRAND affinity tidak tersedia untuk kombinasi Section & Plano ini.")
+                    st.stop()
+
                 # 🔥 NORMALISASI BRAND OTOMATIS
                 df_f = normalize_brand_columns(df_f)
 
-                # Validasi isi brand
-                # Hapus pasangan brand kosong / null
                 df_f = df_f.dropna(subset=["brand_a", "brand_b"]).reset_index(drop=True)
 
                 st.subheader(f"AFFINITY BRAND BY CATEGORY SECTION : {sel_sec_aff}")
@@ -1668,10 +1671,12 @@ def main():
                 df_bs = aff["brand_sub"].copy()
                 df_f = filter_affinity_base(df_bs, sel_sec_aff, sel_plano)
 
-                # 🔥 NORMALISASI BRAND OTOMATIS
+                if df_f.empty:
+                    st.warning("Data BRAND affinity tidak tersedia untuk kombinasi Section & Plano ini.")
+                    st.stop()
+
                 df_f = normalize_brand_columns(df_f)
 
-                # Hapus pasangan brand kosong / null
                 df_f = df_f.dropna(subset=["brand_a", "brand_b"]).reset_index(drop=True)
 
                 st.subheader(f"AFFINITY BRAND BY SUBCATEGORY SECTION : {sel_sec_aff}")

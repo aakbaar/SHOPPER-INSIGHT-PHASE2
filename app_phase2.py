@@ -96,7 +96,21 @@ div[data-testid="stDataFrame"] td:first-child {
     z-index: 3;
     border-right: 2px solid #ddd;
 }
+/* Buat semua kolom filter benar-benar rata */
+div[data-testid="column"] {
+    padding-left: 6px !important;
+    padding-right: 6px !important;
+}
 
+/* Bikin tombol popover full width dalam kolom */
+div[data-testid="stPopover"] > button {
+    width: 100% !important;
+}
+
+/* Supaya tidak terlalu tinggi */
+div[data-testid="stPopover"] button {
+    padding: 8px 10px !important;
+}
 </style>
 """, unsafe_allow_html=True)
 
@@ -1355,7 +1369,7 @@ def main():
 
                     # Buat layout horizontal
                     # filter bar full width
-                    col_filters = st.columns([0.2] + [1]*len(all_filters), gap="small")
+                    col_filters = st.columns(len(all_filters), gap="small", vertical_alignment="center")
 
 
                     st.markdown('<div class="filter-row">', unsafe_allow_html=True)

@@ -1093,7 +1093,7 @@ def main():
             border:none;
             padding:12px;
             border-radius:12px;
-            font-weight:600;
+            font-weight:500;
             font-size:14px;
             cursor:pointer;
             box-shadow: 0 4px 10px rgba(255,0,0,0.25);

@@ -97,6 +97,22 @@ div[data-testid="stDataFrame"] td:first-child {
     border-right: 2px solid #ddd;
 }
 
+/* FIX: perkecil lebar filter selectbox & multiselect */
+div[data-baseweb="select"] {
+    max-width: 260px !important;
+    min-width: 180px !important;
+}
+
+/* input dalamnya ikut kecil */
+div[data-baseweb="select"] > div {
+    max-width: 260px !important;
+    min-width: 180px !important;
+}
+
+/* supaya tidak stretch */
+div[data-baseweb="select"] span {
+    font-size: 13px !important;
+}
 </style>
 """, unsafe_allow_html=True)
 

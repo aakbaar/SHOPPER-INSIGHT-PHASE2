@@ -795,13 +795,26 @@ def render_switching_cards(total_sw, total_no, top_dest_name, top_dest_pct):
         overflow: hidden;
     """
 
+    card_style = """
+        background-color: #F8F9FA; 
+        border-radius: 8px; 
+        padding: 15px; 
+        min-height: 100px; 
+        border: 1px solid #EEE;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        position: relative;
+        overflow: hidden;
+    """
+
     cols = st.columns(3) # Dibagi rata menjadi 3 kolom
     
     with cols[0]:
         st.markdown(f"""
             <div style="{card_style}; border-bottom: 4px solid #E1B7B3;">
-                <p style="color:#666; font-size:13px; margin:0; font-weight:600; text-transform:uppercase;">Switch Rate</p>
-                <div style="font-size:32px; font-weight:800; color:#1E293B; line-height:1.2;">{pct_sw:.2%}</div>
+                <p style="color:#666; font-size:11px; margin:0; font-weight:600; text-transform:uppercase;">Switch Rate</p>
+                <div style="font-size:28px; font-weight:800; color:#1E293B; line-height:1.2;">{pct_sw:.2%}</div>
                 <p style="color:#888; font-size:11px; margin:0;">Total: {total_sw:,} Buyers</p>
             </div>
         """, unsafe_allow_html=True)
@@ -809,8 +822,8 @@ def render_switching_cards(total_sw, total_no, top_dest_name, top_dest_pct):
     with cols[1]:
         st.markdown(f"""
             <div style="{card_style}; border-bottom: 4px solid #AEE3B2;">
-                <p style="color:#666; font-size:13px; margin:0; font-weight:600; text-transform:uppercase;">Retention Rate (No Switch)</p>
-                <div style="font-size:32px; font-weight:800; color:#1E293B; line-height:1.2;">{pct_no:.2%}</div>
+                <p style="color:#666; font-size:11px; margin:0; font-weight:600; text-transform:uppercase;">Retention Rate (No Switch)</p>
+                <div style="font-size:28px; font-weight:800; color:#1E293B; line-height:1.2;">{pct_no:.2%}</div>
                 <p style="color:#888; font-size:11px; margin:0;">Total: {total_no:,} Buyers</p>
             </div>
         """, unsafe_allow_html=True)
@@ -818,8 +831,8 @@ def render_switching_cards(total_sw, total_no, top_dest_name, top_dest_pct):
     with cols[2]:
         st.markdown(f"""
             <div style="{card_style}; border-bottom: 4px solid #3498DB;">
-                <p style="color:#666; font-size:13px; margin:0; font-weight:600; text-transform:uppercase;">Top Destination</p>
-                <div style="font-size:32px; font-weight:800; color:#1E293B; line-height:1.2; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;" title="{top_dest_name}">{top_dest_name}</div>
+                <p style="color:#666; font-size:11px; margin:0; font-weight:600; text-transform:uppercase;">Top Destination</p>
+                <div style="font-size:28px; font-weight:800; color:#1E293B; line-height:1.2; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;" title="{top_dest_name}">{top_dest_name}</div>
                 <p style="color:#888; font-size:11px; margin:0;">Share: {top_dest_pct:.2%} of Switchers</p>
             </div>
         """, unsafe_allow_html=True)

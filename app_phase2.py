@@ -317,24 +317,42 @@ def load_loyalty_data():
 
 @st.cache_data
 def load_affinity_data():
-    files = {
-        "cat": "AFFINITY_CAT_PHASE2.csv",
-        "subcat": "AFFINITY_SUBCAT_PHASE2.csv",
-        "brand_cat": "AFFINITY_BRAND_CAT_PHASE2.csv",
-        "brand_sub": "AFFINITY_BRAND_SUBCAT_PHASE2.csv"
-    }
 
     data = {}
 
-    for key, file in files.items():
-        try:
-            # AUTO DETECT delimiter (, atau ;)
-            df = pd.read_csv(file, sep=None, engine="python")
-            print(f"{file} ✅ OK")
-            data[key] = df
-        except Exception as e:
-            print(f"{file} ❌ ERROR: {e}")
-            data[key] = pd.DataFrame()
+    try:
+        # ===============================
+        # CATEGORY & SUBCATEGORY (NORMAL)
+        # ===============================
+        data["cat"] = pd.read_csv("AFFINITY_CAT_PHASE2.csv", sep=None, engine="python")
+        data["subcat"] = pd.read_csv("AFFINITY_SUBCAT_PHASE2.csv", sep=None, engine="python")
+
+        # ===============================
+        # BRAND CAT (SPLIT FILE)
+        # ===============================
+        brand_cat_files = [
+            "AFFINITY_BRAND_CAT_PHASE2_part0.csv",
+            "AFFINITY_BRAND_CAT_PHASE2_part1.csv"
+        ]
+
+        brand_cat_list = []
+        for f in brand_cat_files:
+            if os.path.exists(f):
+                brand_cat_list.append(pd.read_csv(f, sep=None, engine="python"))
+
+        if brand_cat_list:
+            data["brand_cat"] = pd.concat(brand_cat_list, ignore_index=True)
+        else:
+            data["brand_cat"] = pd.DataFrame()
+
+        # ===============================
+        # BRAND SUBCAT (NORMAL)
+        # ===============================
+        data["brand_sub"] = pd.read_csv("AFFINITY_BRAND_SUBCAT_PHASE2.csv", sep=None, engine="python")
+
+    except Exception as e:
+        st.error(f"Gagal load affinity data: {e}")
+        return {}
 
     return data
 

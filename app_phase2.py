@@ -96,21 +96,7 @@ div[data-testid="stDataFrame"] td:first-child {
     z-index: 3;
     border-right: 2px solid #ddd;
 }
-/* Buat semua kolom filter benar-benar rata */
-div[data-testid="column"] {
-    padding-left: 6px !important;
-    padding-right: 6px !important;
-}
 
-/* Bikin tombol popover full width dalam kolom */
-div[data-testid="stPopover"] > button {
-    width: 100% !important;
-}
-
-/* Supaya tidak terlalu tinggi */
-div[data-testid="stPopover"] button {
-    padding: 8px 10px !important;
-}
 </style>
 """, unsafe_allow_html=True)
 
@@ -1369,53 +1355,59 @@ def main():
 
                     # Buat layout horizontal
                     # filter bar full width
-                    col_filters = st.columns(len(all_filters), gap="small", vertical_alignment="center")
+                    col_filters = st.columns([0.2] + [1]*len(all_filters), gap="small")
 
-
-                    st.markdown('<div class="filter-row">', unsafe_allow_html=True)
 
                     active_filters = {}
 
                     for j, filt_col in enumerate(all_filters):
+                        with col_filters[j]:
+                            if filt_col in df_raw.columns:
 
-                        if filt_col in df_raw.columns:
+                                unique_vals = sorted(df_raw[filt_col].dropna().unique().tolist())
+                                item_keys = [f"chk_sw_{i}_{j}_{val}" for val in unique_vals]
 
-                            unique_vals = sorted(df_raw[filt_col].dropna().unique().tolist())
-                            item_keys = [f"chk_sw_{i}_{j}_{val}" for val in unique_vals]
+                                # INIT default checked
+                                for k in item_keys:
+                                    if k not in st.session_state:
+                                        st.session_state[k] = True
 
-                            for k in item_keys:
-                                if k not in st.session_state:
-                                    st.session_state[k] = True
+                                label = f"{filt_col}:"
+                                with st.popover(label):
 
-                            label = f"{filt_col}"
+                                    colA, colB = st.columns(2)
 
-                            with st.popover(label):
+                                    # SELECT ALL
+                                    with colA:
+                                        if st.button("Select All", key=f"btn_all_{i}_{j}"):
+                                            for k in item_keys:
+                                                st.session_state[k] = True
 
-                                colA, colB = st.columns(2)
+                                    # CLEAR ALL
+                                    with colB:
+                                        if st.button("Clear All", key=f"btn_clear_{i}_{j}"):
+                                            for k in item_keys:
+                                                st.session_state[k] = False
 
-                                with colA:
-                                    if st.button("Select All", key=f"btn_all_{i}_{j}"):
-                                        for k in item_keys:
-                                            st.session_state[k] = True
+                                    selected_vals = []
 
-                                with colB:
-                                    if st.button("Clear All", key=f"btn_clear_{i}_{j}"):
-                                        for k in item_keys:
-                                            st.session_state[k] = False
+                                    for val in unique_vals:
+                                        k = f"chk_sw_{i}_{j}_{val}"
+                                        if st.checkbox(val, key=k):
+                                            selected_vals.append(val)
 
-                                selected_vals = []
+                                # simpan state filter
+                                active_filters[filt_col] = selected_vals
 
-                                for val in unique_vals:
-                                    k = f"chk_sw_{i}_{j}_{val}"
-                                    if st.checkbox(val, key=k):
-                                        selected_vals.append(val)
+                                # apply filter
+                                if selected_vals:
+                                    df_raw = df_raw[df_raw[filt_col].isin(selected_vals)]
 
-                            active_filters[filt_col] = selected_vals
-
-                            if selected_vals:
-                                df_raw = df_raw[df_raw[filt_col].isin(selected_vals)]
-
-                    st.markdown('</div>', unsafe_allow_html=True)
+                    if df_raw.empty:
+                        st.warning("No data available for this filter.")
+                        continue
+                    
+                    st.markdown("<br>", unsafe_allow_html=True)
 
                     # --- ROW 2: KPI CARDS ---
                     total_sw = df_raw[df_raw["SWITCH_FLAG"] == "SWITCH"]["BUYER_ID"].nunique()

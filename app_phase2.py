@@ -274,11 +274,6 @@ st.markdown("""
     [data-testid="stMetricDelta"] {
         font-size: 0.7rem !important;
     }
-
-    /* 5. MENGATUR JARAK ANTAR KARTU (Jika pakai st.columns) */
-    div[data-testid="column"] {
-        padding: 0px 5px !important;
-    }
     </style>
     """, unsafe_allow_html=True)
 

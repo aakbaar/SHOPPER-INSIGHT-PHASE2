@@ -1355,7 +1355,7 @@ def main():
 
                     # Buat layout horizontal
                     # filter bar full width
-                    col_filters = st.columns([0.6]*len(all_filters) + [4], gap="small")
+                    col_filters = st.columns([0.6]*len(all_filters) + [1], gap="small")
 
 
                     active_filters = {}

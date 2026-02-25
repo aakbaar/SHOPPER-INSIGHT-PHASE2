@@ -24,27 +24,6 @@ h3 { font-size: 16px; }
 /* METRIC CARD COMPACT */
 /* ========================= */
 
-div[data-testid="metric-container"] {
-    padding: 10px 10px;
-    border-radius: 8px;
-}
-
-/* ========================= */
-/* DATAFRAME SAFE */
-/* ========================= */
-
-div[data-testid="stDataFrame"] {
-    overflow: auto;
-}
-
-/* sticky header tetap aman */
-div[data-testid="stDataFrame"] thead tr th {
-    position: sticky;
-    top: 0;
-    background: white;
-    z-index: 2;
-}
-
 /* ========================= */
 /* SIDEBAR TETAP NORMAL */
 /* ========================= */
@@ -62,39 +41,6 @@ button[role="tab"] {
     border-radius: 10px;
 }
 
-/* ========================= */
-/* SPACING RAPAT */
-/* ========================= */
-
-div[data-testid="stVerticalBlock"] {
-    gap: 0.5rem;
-}
-
-/* hilangkan ruang kosong */
-div[data-testid="stVerticalBlock"] > div:empty {
-    display: none;
-}
-div[data-testid="stDataFrame"] table th:first-child,
-div[data-testid="stDataFrame"] table td:first-child {
-    position: sticky;
-    left: 0;
-    background: white;
-    z-index: 2;
-    border-right: 1px solid #ddd;
-}
-/* Freeze first column on all Streamlit dataframes */
-div[data-testid="stDataFrame"] table {
-    border-collapse: separate !important;
-}
-
-div[data-testid="stDataFrame"] th:first-child,
-div[data-testid="stDataFrame"] td:first-child {
-    position: sticky;
-    left: 0;
-    background: white;
-    z-index: 3;
-    border-right: 2px solid #ddd;
-}
 
 </style>
 """, unsafe_allow_html=True)

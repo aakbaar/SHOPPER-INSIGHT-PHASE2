@@ -5,7 +5,7 @@ st.markdown("""
 /* Kecilkan lebar layout utama */
 .block-container {
     max-width: 800px;
-    padding-top: 0rem;
+    padding-top: 3rem;
 }
 
 /* ========================= */

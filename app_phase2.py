@@ -1357,25 +1357,6 @@ def main():
                     # filter bar full width
                     col_filters = st.columns([0.7]*len(all_filters), gap="small")
 
-                    # CSS: popover full width kolom
-                    st.markdown("""
-                    <style>
-                    /* popover full width */
-                    div[data-testid="stPopover"] {
-                        width: 100% !important;
-                    }
-
-                    div[data-testid="stPopover"] > div {
-                        width: 100% !important;
-                        min-width: 400px !important;
-                    }
-
-                    /* isi popover lebih lega */
-                    div[data-baseweb="popover"] {
-                        padding: 14px !important;
-                    }
-                    </style>
-                    """, unsafe_allow_html=True)
 
                     active_filters = {}
 

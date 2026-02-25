@@ -2,26 +2,31 @@ import streamlit as st
 
 st.markdown("""
 <style>
-/* GLOBAL LAYOUT STABLE */
+/* Kecilkan lebar layout utama */
 .block-container {
-    padding-top: 0.5rem;
-    padding-bottom: 0rem;
+    max-width: 1600px;
+    padding-top: 1rem;
 }
 
-/* HEADER FIX */
-h1, h2, h3 {
-    margin-top: 0px !important;
-    padding-top: 0px !important;
+/* ========================= */
+/* FONT SCALING */
+/* ========================= */
+
+html, body, [class*="css"]  {
+    font-size: 13px;
 }
 
-hr {
-    margin: 12px 0px !important;
-}
+h1 { font-size: 26px; }
+h2 { font-size: 20px; }
+h3 { font-size: 16px; }
 
-/* VERTICAL GAP STREAMLIT */
-div[data-testid="stVerticalBlock"] {
-    gap: 0.6rem;
-}
+/* ========================= */
+/* METRIC CARD COMPACT */
+/* ========================= */
+
+/* ========================= */
+/* SIDEBAR TETAP NORMAL */
+/* ========================= */
 
 section[data-testid="stSidebar"] {
     width: 220px !important;

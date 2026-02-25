@@ -1361,7 +1361,7 @@ def main():
                     active_filters = {}
 
                     for j, filt_col in enumerate(all_filters):
-                        with col_filters[j]:
+                        with col_filters[j+1]:
                             if filt_col in df_raw.columns:
 
                                 unique_vals = sorted(df_raw[filt_col].dropna().unique().tolist())

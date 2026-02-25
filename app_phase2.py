@@ -2,7 +2,15 @@ import streamlit as st
 
 st.markdown("""
 <style>
-st.set_page_config(layout="wide")
+/* Kecilkan lebar layout utama */
+.block-container {
+    max-width: 1000px;
+    padding-top: 1rem;
+}
+
+/* ========================= */
+/* FONT SCALING */
+/* ========================= */
 
 html, body, [class*="css"]  {
     font-size: 13px;

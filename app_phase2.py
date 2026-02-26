@@ -872,18 +872,6 @@ def render_category_promo_driven(df):
 
     st.markdown("### 🚀 CATEGORY PROMO DRIVEN")
 
-    st.markdown("""
-    <div style="
-        background: linear-gradient(145deg, #ffffff, #f3f4f6);
-        padding: 18px;
-        border-radius: 14px;
-        box-shadow: 
-            0 4px 12px rgba(0,0,0,0.08),
-            0 1px 2px rgba(0,0,0,0.06);
-        border: 1px solid #e5e7eb;
-    ">
-    """, unsafe_allow_html=True)
-
     st.dataframe(
         temp[
             [
@@ -893,7 +881,8 @@ def render_category_promo_driven(df):
                 "PROMO_SHARE",
                 "NON_PROMO_SHARE",
             ]
-        ].style.format(
+        ]
+        .style.format(
             {
                 "PROMO_SHARE": "{:.1%}",
                 "NON_PROMO_SHARE": "{:.1%}",
@@ -902,8 +891,6 @@ def render_category_promo_driven(df):
         use_container_width=True,
         hide_index=True,
     )
-
-    st.markdown("</div>", unsafe_allow_html=True)
 def render_category_promo_share_chart(df):
     """
     Promo vs Non Promo (Average BEFORE & AFTER)

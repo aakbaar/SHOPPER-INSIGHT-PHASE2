@@ -916,6 +916,7 @@ def render_category_promo_share_chart(df):
 
     st.markdown ("------")
     st.markdown("### CATEGORY PROMO DRIVEN ")
+    st.caption("Share pembeli yang membeli karena promo vs tanpa promo pada tiap kategori.")
 
     temp = df.copy()
 

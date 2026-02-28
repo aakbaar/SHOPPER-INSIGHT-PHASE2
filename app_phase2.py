@@ -561,16 +561,26 @@ def render_affinity_tab(df, col_a, col_b, filter_cols, key_prefix, show_qty_impa
         if col in df.columns:
             df[col] = pd.to_numeric(df[col], errors='coerce').fillna(0)
 
-    # ==========================================
-    # PENENTUAN TOTAL TRANSAKSI (FIXED VERSION)
-    # ==========================================
     epsilon = 1e-9
 
-    total_trans = None
+    if 'total_transactions' not in df.columns:
+        st.error("Kolom total_transactions tidak ditemukan.")
+        return
 
-    # 1️⃣ Jika sudah ada di file affinity
-    if 'total_transactions' in df.columns:
-        total_trans = df['total_transactions'].iloc[0]
+    # Ambil nilai pertama
+    total_trans = df['total_transactions'].iloc[0]
+
+    # Pastikan numeric
+    try:
+        total_trans = float(total_trans)
+    except:
+        st.error("total_transactions bukan angka.")
+        return
+
+    # Pastikan tidak null / nol
+    if pd.isna(total_trans) or total_trans <= 0:
+        st.error("Universe transaksi tidak valid (0 atau NaN).")
+        return
             
     # Pastikan total_trans tidak nol agar tidak pembagian nol
     if total_trans <= 0:

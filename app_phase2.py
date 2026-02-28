@@ -1642,8 +1642,6 @@ def main():
                     st.warning("Data BRAND affinity tidak tersedia untuk kombinasi Section & Plano ini.")
                     st.stop()
 
-                df_f = normalize_brand_columns(df_f)
-
                 df_f = df_f.dropna(subset=["brand_a", "brand_b"]).reset_index(drop=True)
 
                 st.subheader(f"AFFINITY BRAND BY SUBCATEGORY SECTION : {sel_sec_aff}")
@@ -1667,7 +1665,6 @@ def main():
                     st.warning("Data Same Brand Cross Category tidak tersedia.")
                     st.stop()
 
-                df_f = normalize_brand_columns(df_f)
                 df_f = df_f.dropna(subset=["brand"]).reset_index(drop=True)
 
                 st.subheader(f"SAME BRAND - CROSS CATEGORY : {sel_sec_aff}")
@@ -1691,7 +1688,6 @@ def main():
                         st.warning("Data Same Brand Cross Subcategory tidak tersedia.")
                         st.stop()
 
-                    df_f = normalize_brand_columns(df_f)
                     df_f = df_f.dropna(subset=["brand"]).reset_index(drop=True)
 
                     st.subheader(f"SAME BRAND - CROSS SUBCATEGORY : {sel_sec_aff}")

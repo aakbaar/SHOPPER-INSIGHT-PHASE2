@@ -587,10 +587,19 @@ def render_affinity_tab(df, col_a, col_b, filter_cols, key_prefix, show_qty_impa
         st.error("Kolom total_transactions tidak ditemukan. Periksa SQL affinity.")
         return
 
-    if df['total_transactions'].nunique() != 1:
-        st.warning("Terdapat lebih dari satu nilai total_transactions dalam dataset ini. Periksa filter.")
+    unique_universe = df['total_transactions'].dropna().unique()
 
-    total_trans = df['total_transactions'].iloc[0]
+    if len(unique_universe) == 0:
+        st.error("Universe transaksi kosong.")
+        return
+
+    if len(unique_universe) > 1:
+        st.warning("Multiple universe detected → menggunakan nilai maksimum sebagai universe global.")
+
+        # Gunakan nilai terbesar sebagai universe
+        total_trans = max(unique_universe)
+    else:
+        total_trans = unique_universe[0]
 
     if pd.isna(total_trans) or total_trans <= 0:
         st.error("Universe transaksi tidak valid (0 atau NaN).")

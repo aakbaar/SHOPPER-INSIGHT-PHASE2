@@ -1085,14 +1085,8 @@ def main():
         # default index section huruf B
         start_idx = next((i for i, s in enumerate(sections_only) if str(s).startswith('B')), 0)
 
-        # 🔥 Universe transaksi global
-        global total_struk_global
-        if 'df_raw' in globals():
-            total_struk_global = df_raw['NO_STRUK'].nunique()
-        else:
-            total_struk_global = df_p['BUYER_COUNT_BEFORE'].max()
+       
         with col_sec: 
-            # HAPUS ["ALL"] + dan gunakan index=start_idx
             sel_sec = st.selectbox("SECTION FILTER", sections_only, index=start_idx, key="sec_perf")
         st.markdown(f"**[NOV 2025 - JAN 2026]**")
 

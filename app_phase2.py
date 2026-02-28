@@ -561,29 +561,32 @@ def render_affinity_tab(df, col_a, col_b, filter_cols, key_prefix, show_qty_impa
         if col in df.columns:
             df[col] = pd.to_numeric(df[col], errors='coerce').fillna(0)
 
-    # ==========================================
-    # PENENTUAN TOTAL TRANSAKSI (FIXED VERSION)
-    # ==========================================
     epsilon = 1e-9
 
-    total_trans = None
+    # ================================
+    # UNIVERSE RESOLUTION (CLEAN)
+    # ================================
 
     if 'total_transactions' in df.columns:
-        total_trans = df['total_transactions'].iloc[0]
+        unique_universe = df['total_transactions'].dropna().unique()
+
+        if len(unique_universe) == 0:
+            st.error("Universe kosong.")
+            return
+
+        # Jika multiple, ambil maksimum (lebih aman daripada iloc[0])
+        total_trans = max(unique_universe)
+
     else:
-        total_trans = df['trans_a'].max()
+        # fallback jika file tidak punya total_transactions
+        if 'trans_a' in df.columns:
+            total_trans = df['trans_a'].max()
+        else:
+            total_trans = 1  # very last fallback
 
-    # 3️⃣ Jika performa punya buyer count
-    elif 'BUYER_COUNT_BEFORE' in df_p.columns:
-        total_trans = df_p['BUYER_COUNT_BEFORE'].sum()
-
-    # 4️⃣ fallback terakhir (aman agar tidak 0)
-    if not total_trans or total_trans <= 0:
-        total_trans = df['trans_a'].max() if 'trans_a' in df.columns else 1
-            
-    # Pastikan total_trans tidak nol agar tidak pembagian nol
+    # Proteksi pembagian nol
     if total_trans <= 0:
-        st.error("Gagal menghitung populasi transaksi (Universe). Periksa sumber data Anda.")
+        st.error("Universe transaksi tidak valid.")
         return
     # 3. Kalkulasi Metrik MBA (Raw)
     df['measure_support'] = df['trans_ab'] / (total_trans + epsilon)

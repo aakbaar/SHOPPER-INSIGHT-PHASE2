@@ -556,7 +556,15 @@ def render_affinity_tab(df, col_a, col_b, filter_cols, key_prefix, show_qty_impa
     df[col_a] = df[col_a].astype(str)
     df[col_b] = df[col_b].astype(str)
     
-    numeric_cols = ['trans_ab', 'trans_a', 'trans_b', 'qty_ab', 'avg_qty_b_when_pair']
+    numeric_cols = [
+        'trans_ab', 
+        'trans_a', 
+        'trans_b', 
+        'qty_ab', 
+        'avg_qty_b_when_pair',
+        'support_ratio',
+        'total_transactions'
+    ]
     for col in numeric_cols:
         if col in df.columns:
             df[col] = pd.to_numeric(df[col], errors='coerce').fillna(0)

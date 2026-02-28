@@ -571,41 +571,24 @@ def render_affinity_tab(df, col_a, col_b, filter_cols, key_prefix, show_qty_impa
     # 1️⃣ Jika sudah ada di file affinity
     if 'total_transactions' in df.columns:
         total_trans = df['total_transactions'].iloc[0]
-
-    # 2️⃣ Jika global tersedia
-    elif 'total_struk_global' in globals():
-        total_trans = total_struk_global
-
-    # 3️⃣ Jika performa punya buyer count
-    elif 'BUYER_COUNT_BEFORE' in df_p.columns:
-        total_trans = df_p['BUYER_COUNT_BEFORE'].sum()
-
-    # 4️⃣ fallback terakhir (aman agar tidak 0)
-    if not total_trans or total_trans <= 0:
-        total_trans = df['trans_a'].max() if 'trans_a' in df.columns else 1
             
     # Pastikan total_trans tidak nol agar tidak pembagian nol
     if total_trans <= 0:
         st.error("Gagal menghitung populasi transaksi (Universe). Periksa sumber data Anda.")
         return
     # 3. Kalkulasi Metrik MBA (Raw)
-    df['measure_support'] = df['trans_ab'] / (total_trans + epsilon)
+    df['measure_support'] = df['support_ratio']
     df['measure_confidence'] = df['trans_ab'] / (df['trans_a'] + epsilon)
-    
-    supp_a = df['trans_a'] / (total_trans + epsilon)
-    supp_b = df['trans_b'] / (total_trans + epsilon)
+
+    supp_a = df['trans_a'] / total_trans
+    supp_b = df['trans_b'] / total_trans
+
     df['measure_lift'] = df['measure_support'] / ((supp_a * supp_b) + epsilon)
 
-    # 4. Normalisasi (Skala 0-1)
-    df['conf_norm'] = df['measure_confidence'].clip(0, 1)
-    
-    # SUPPORT: Hapus Min-Max Scaling! Gunakan persentase asli probabilitas agar skor tidak membengkak
-    df['supp_norm'] = df['measure_support'].clip(0, 1)
-    
-    # LIFT: Tetap dinormalisasi (Hanya korelasi positif > 1 yang dihitung)
+    df['conf_norm'] = df['measure_confidence'].clip(0, 1)    
+    df['supp_norm'] = df['measure_support'].clip(0, 1)    
     df['lift_norm'] = df['measure_lift'].apply(lambda x: (x-1)/4 if x > 1 else 0).clip(0, 1)
 
-    # 5. Weighted Score (Konfigurasi Bobot Anda: 70/25/5)
     df['weighted_score'] = (
         (df['supp_norm'] * 0.70) + 
         (df['conf_norm'] * 0.25) + 

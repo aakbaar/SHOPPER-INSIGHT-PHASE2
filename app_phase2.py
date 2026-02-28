@@ -289,7 +289,7 @@ def load_affinity_data():
 
         if os.path.exists("AFFINITY_BRAND_SAME_CAT_PHASE2.csv"):
             data["same_brand_cat"] = pd.read_csv(
-                "AFFINITY_SAME_BRAND_CAT_PHASE2.csv",
+                "AFFINITY_BRAND_SAME_CAT_PHASE2.csv",
                 sep=None,
                 engine="python"
             )
@@ -298,7 +298,7 @@ def load_affinity_data():
 
         if os.path.exists("AFFINITY_BRAND_SAME_SUBCAT_PHASE2.csv"):
             data["same_brand_subcat"] = pd.read_csv(
-                "AFFINITY_SAME_BRAND_SUBCAT_PHASE2.csv",
+                "AFFINITY_BRAND_SAME_SUBCAT_PHASE2.csv",
                 sep=None,
                 engine="python"
             )

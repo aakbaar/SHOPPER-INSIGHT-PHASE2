@@ -556,60 +556,83 @@ def render_affinity_tab(df, col_a, col_b, filter_cols, key_prefix, show_qty_impa
     df[col_a] = df[col_a].astype(str)
     df[col_b] = df[col_b].astype(str)
     
+    # =====================================================
+    # NUMERIC CASTING (SAFE)
+    # =====================================================
     numeric_cols = [
-        'trans_ab', 
-        'trans_a', 
-        'trans_b', 
-        'qty_ab', 
+        'trans_ab',
+        'trans_a',
+        'trans_b',
+        'qty_ab',
         'avg_qty_b_when_pair',
         'support_ratio',
         'total_transactions'
     ]
+
     for col in numeric_cols:
         if col in df.columns:
             df[col] = pd.to_numeric(df[col], errors='coerce').fillna(0)
 
     epsilon = 1e-9
 
+    # =====================================================
+    # UNIVERSE VALIDATION (STRICT & SAFE)
+    # =====================================================
     if 'total_transactions' not in df.columns:
-        st.error("Kolom total_transactions tidak ditemukan.")
+        st.error("Kolom total_transactions tidak ditemukan. Periksa SQL affinity.")
         return
 
-    # Ambil nilai pertama
+    if df['total_transactions'].nunique() != 1:
+        st.warning("Terdapat lebih dari satu nilai total_transactions dalam dataset ini. Periksa filter.")
+
     total_trans = df['total_transactions'].iloc[0]
 
-    # Pastikan numeric
-    try:
-        total_trans = float(total_trans)
-    except:
-        st.error("total_transactions bukan angka.")
-        return
-
-    # Pastikan tidak null / nol
     if pd.isna(total_trans) or total_trans <= 0:
         st.error("Universe transaksi tidak valid (0 atau NaN).")
         return
-            
-    # Pastikan total_trans tidak nol agar tidak pembagian nol
-    if total_trans <= 0:
-        st.error("Gagal menghitung populasi transaksi (Universe). Periksa sumber data Anda.")
-        return
-    # 3. Kalkulasi Metrik MBA (Raw)
-    df['measure_support'] = df['support_ratio']
-    df['measure_confidence'] = df['trans_ab'] / (df['trans_a'] + epsilon)
 
+    # =====================================================
+    # MBA METRICS
+    # =====================================================
+
+    # Support (langsung dari SQL)
+    df['measure_support'] = df['support_ratio']
+
+    # Confidence
+    df['measure_confidence'] = np.where(
+        df['trans_a'] > 0,
+        df['trans_ab'] / (df['trans_a'] + epsilon),
+        0
+    )
+
+    # Lift (stabil, tidak meledak)
     supp_a = df['trans_a'] / total_trans
     supp_b = df['trans_b'] / total_trans
 
-    df['measure_lift'] = df['measure_support'] / ((supp_a * supp_b) + epsilon)
+    expected_support = supp_a * supp_b
 
-    df['conf_norm'] = df['measure_confidence'].clip(0, 1)    
-    df['supp_norm'] = df['measure_support'].clip(0, 1)    
-    df['lift_norm'] = df['measure_lift'].apply(lambda x: (x-1)/4 if x > 1 else 0).clip(0, 1)
+    df['measure_lift'] = np.where(
+        expected_support > 0,
+        df['measure_support'] / (expected_support + epsilon),
+        0
+    )
 
+    # =====================================================
+    # NORMALIZATION
+    # =====================================================
+    df['conf_norm'] = df['measure_confidence'].clip(0, 1)
+    df['supp_norm'] = df['measure_support'].clip(0, 1)
+
+    df['lift_norm'] = df['measure_lift'].apply(
+        lambda x: (x - 1) / 4 if x > 1 else 0
+    ).clip(0, 1)
+
+    # =====================================================
+    # WEIGHTED SCORE
+    # =====================================================
     df['weighted_score'] = (
-        (df['supp_norm'] * 0.70) + 
-        (df['conf_norm'] * 0.25) + 
+        (df['supp_norm'] * 0.70) +
+        (df['conf_norm'] * 0.25) +
         (df['lift_norm'] * 0.05)
     )
 

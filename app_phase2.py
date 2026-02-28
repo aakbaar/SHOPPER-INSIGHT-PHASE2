@@ -583,9 +583,6 @@ def render_affinity_tab(df, col_a, col_b, filter_cols, key_prefix, show_qty_impa
     # =====================================================
     # UNIVERSE VALIDATION (STRICT & SAFE)
     # =====================================================
-    st.write("DEBUG → COLUMNS:")
-    st.write([repr(c) for c in df.columns])
-    st.write("CHECK total_transactions exists:", 'total_transactions' in df.columns)
     if 'total_transactions' not in df.columns:
         st.error("Kolom total_transactions tidak ditemukan. Periksa SQL affinity.")
         return

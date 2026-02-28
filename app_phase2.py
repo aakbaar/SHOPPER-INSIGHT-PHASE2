@@ -563,30 +563,25 @@ def render_affinity_tab(df, col_a, col_b, filter_cols, key_prefix, show_qty_impa
 
     epsilon = 1e-9
 
-    # ================================
-    # UNIVERSE RESOLUTION (CLEAN)
-    # ================================
-
+    # 1️⃣ Jika sudah ada di file affinity
     if 'total_transactions' in df.columns:
-        unique_universe = df['total_transactions'].dropna().unique()
+        total_trans = df['total_transactions'].iloc[0]
 
-        if len(unique_universe) == 0:
-            st.error("Universe kosong.")
-            return
+    # 2️⃣ Jika global tersedia
+    elif 'total_struk_global' in globals():
+        total_trans = total_struk_global
 
-        # Jika multiple, ambil maksimum (lebih aman daripada iloc[0])
-        total_trans = max(unique_universe)
+    # 3️⃣ Jika performa punya buyer count
+    elif 'BUYER_COUNT_BEFORE' in df_p.columns:
+        total_trans = df_p['BUYER_COUNT_BEFORE'].sum()
 
-    else:
-        # fallback jika file tidak punya total_transactions
-        if 'trans_a' in df.columns:
-            total_trans = df['trans_a'].max()
-        else:
-            total_trans = 1  # very last fallback
-
-    # Proteksi pembagian nol
+    # 4️⃣ fallback terakhir (aman agar tidak 0)
+    if not total_trans or total_trans <= 0:
+        total_trans = df['trans_a'].max() if 'trans_a' in df.columns else 1
+            
+    # Pastikan total_trans tidak nol agar tidak pembagian nol
     if total_trans <= 0:
-        st.error("Universe transaksi tidak valid.")
+        st.error("Gagal menghitung populasi transaksi (Universe). Periksa sumber data Anda.")
         return
     # 3. Kalkulasi Metrik MBA (Raw)
     df['measure_support'] = df['trans_ab'] / (total_trans + epsilon)
@@ -1085,8 +1080,14 @@ def main():
         # default index section huruf B
         start_idx = next((i for i, s in enumerate(sections_only) if str(s).startswith('B')), 0)
 
-       
+        # 🔥 Universe transaksi global
+        global total_struk_global
+        if 'df_raw' in globals():
+            total_struk_global = df_raw['NO_STRUK'].nunique()
+        else:
+            total_struk_global = df_p['BUYER_COUNT_BEFORE'].max()
         with col_sec: 
+            # HAPUS ["ALL"] + dan gunakan index=start_idx
             sel_sec = st.selectbox("SECTION FILTER", sections_only, index=start_idx, key="sec_perf")
         st.markdown(f"**[NOV 2025 - JAN 2026]**")
 

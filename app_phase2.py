@@ -548,7 +548,12 @@ def render_affinity_tab(df, col_a, col_b, filter_cols, key_prefix, show_qty_impa
         return
 
     df = df.copy()
-    df.columns = [c.lower() for c in df.columns]
+    df.columns = (
+        df.columns
+        .str.strip()        # hapus spasi depan/belakang
+        .str.lower()        # lowercase
+        .str.replace(" ", "_")  # kalau ada spasi jadi underscore
+    )
     col_a, col_b = col_a.lower(), col_b.lower()
     filter_cols = [f.lower() for f in filter_cols]
     extra_display_cols = [c.lower() for c in extra_display_cols]

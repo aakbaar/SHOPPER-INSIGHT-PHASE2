@@ -562,6 +562,8 @@ def render_affinity_tab(df, col_a, col_b, filter_cols, key_prefix, show_qty_impa
             df[col] = pd.to_numeric(df[col], errors='coerce').fillna(0)
 
     epsilon = 1e-9
+    
+    total_trans = None
 
     # 1️⃣ Jika sudah ada di file affinity
     if 'total_transactions' in df.columns:

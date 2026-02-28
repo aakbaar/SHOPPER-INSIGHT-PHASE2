@@ -568,13 +568,10 @@ def render_affinity_tab(df, col_a, col_b, filter_cols, key_prefix, show_qty_impa
 
     total_trans = None
 
-    # 1️⃣ Jika sudah ada di file affinity
     if 'total_transactions' in df.columns:
         total_trans = df['total_transactions'].iloc[0]
-
-    # 2️⃣ Jika global tersedia
-    elif 'total_struk_global' in globals():
-        total_trans = total_struk_global
+    else:
+        total_trans = df['trans_a'].max()
 
     # 3️⃣ Jika performa punya buyer count
     elif 'BUYER_COUNT_BEFORE' in df_p.columns:

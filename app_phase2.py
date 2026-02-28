@@ -548,12 +548,7 @@ def render_affinity_tab(df, col_a, col_b, filter_cols, key_prefix, show_qty_impa
         return
 
     df = df.copy()
-    df.columns = (
-        df.columns
-        .str.strip()        # hapus spasi depan/belakang
-        .str.lower()        # lowercase
-        .str.replace(" ", "_")  # kalau ada spasi jadi underscore
-    )
+    df.columns = [c.lower() for c in df.columns]
     col_a, col_b = col_a.lower(), col_b.lower()
     filter_cols = [f.lower() for f in filter_cols]
     extra_display_cols = [c.lower() for c in extra_display_cols]
@@ -561,92 +556,59 @@ def render_affinity_tab(df, col_a, col_b, filter_cols, key_prefix, show_qty_impa
     df[col_a] = df[col_a].astype(str)
     df[col_b] = df[col_b].astype(str)
     
-    # =====================================================
-    # NUMERIC CASTING (SAFE)
-    # =====================================================
-    numeric_cols = [
-        'trans_ab',
-        'trans_a',
-        'trans_b',
-        'qty_ab',
-        'avg_qty_b_when_pair',
-        'support_ratio',
-        'total_transactions'
-    ]
-
+    numeric_cols = ['trans_ab', 'trans_a', 'trans_b', 'qty_ab', 'avg_qty_b_when_pair']
     for col in numeric_cols:
         if col in df.columns:
             df[col] = pd.to_numeric(df[col], errors='coerce').fillna(0)
 
+    # ==========================================
+    # PENENTUAN TOTAL TRANSAKSI (FIXED VERSION)
+    # ==========================================
     epsilon = 1e-9
 
-    # =====================================================
-    # UNIVERSE VALIDATION (STRICT & SAFE)
-    # =====================================================
-    if 'total_transactions' not in df.columns:
-        st.error("Kolom total_transactions tidak ditemukan. Periksa SQL affinity.")
+    total_trans = None
+
+    # 1️⃣ Jika sudah ada di file affinity
+    if 'total_transactions' in df.columns:
+        total_trans = df['total_transactions'].iloc[0]
+
+    # 2️⃣ Jika global tersedia
+    elif 'total_struk_global' in globals():
+        total_trans = total_struk_global
+
+    # 3️⃣ Jika performa punya buyer count
+    elif 'BUYER_COUNT_BEFORE' in df_p.columns:
+        total_trans = df_p['BUYER_COUNT_BEFORE'].sum()
+
+    # 4️⃣ fallback terakhir (aman agar tidak 0)
+    if not total_trans or total_trans <= 0:
+        total_trans = df['trans_a'].max() if 'trans_a' in df.columns else 1
+            
+    # Pastikan total_trans tidak nol agar tidak pembagian nol
+    if total_trans <= 0:
+        st.error("Gagal menghitung populasi transaksi (Universe). Periksa sumber data Anda.")
         return
+    # 3. Kalkulasi Metrik MBA (Raw)
+    df['measure_support'] = df['trans_ab'] / (total_trans + epsilon)
+    df['measure_confidence'] = df['trans_ab'] / (df['trans_a'] + epsilon)
+    
+    supp_a = df['trans_a'] / (total_trans + epsilon)
+    supp_b = df['trans_b'] / (total_trans + epsilon)
+    df['measure_lift'] = df['measure_support'] / ((supp_a * supp_b) + epsilon)
 
-    unique_universe = df['total_transactions'].dropna().unique()
-
-    if len(unique_universe) == 0:
-        st.error("Universe transaksi kosong.")
-        return
-
-    if len(unique_universe) > 1:
-        st.warning("Multiple universe detected → menggunakan nilai maksimum sebagai universe global.")
-
-        # Gunakan nilai terbesar sebagai universe
-        total_trans = max(unique_universe)
-    else:
-        total_trans = unique_universe[0]
-
-    if pd.isna(total_trans) or total_trans <= 0:
-        st.error("Universe transaksi tidak valid (0 atau NaN).")
-        return
-
-    # =====================================================
-    # MBA METRICS
-    # =====================================================
-
-    # Support (langsung dari SQL)
-    df['measure_support'] = df['support_ratio']
-
-    # Confidence
-    df['measure_confidence'] = np.where(
-        df['trans_a'] > 0,
-        df['trans_ab'] / (df['trans_a'] + epsilon),
-        0
-    )
-
-    # Lift (stabil, tidak meledak)
-    supp_a = df['trans_a'] / total_trans
-    supp_b = df['trans_b'] / total_trans
-
-    expected_support = supp_a * supp_b
-
-    df['measure_lift'] = np.where(
-        expected_support > 0,
-        df['measure_support'] / (expected_support + epsilon),
-        0
-    )
-
-    # =====================================================
-    # NORMALIZATION
-    # =====================================================
+    # 4. Normalisasi (Skala 0-1)
     df['conf_norm'] = df['measure_confidence'].clip(0, 1)
+    
+    # SUPPORT: Hapus Min-Max Scaling! Gunakan persentase asli probabilitas agar skor tidak membengkak
     df['supp_norm'] = df['measure_support'].clip(0, 1)
+    
+    # LIFT: Tetap dinormalisasi (Hanya korelasi positif > 1 yang dihitung)
+    df['lift_norm'] = df['measure_lift'].apply(lambda x: (x-1)/4 if x > 1 else 0).clip(0, 1)
 
-    df['lift_norm'] = df['measure_lift'].apply(
-        lambda x: (x - 1) / 4 if x > 1 else 0
-    ).clip(0, 1)
-
-    # =====================================================
-    # WEIGHTED SCORE
-    # =====================================================
+    # 5. Weighted Score (Konfigurasi Bobot Anda: 70/25/5)
     df['weighted_score'] = (
-        (df['supp_norm'] * 0.70) +
-        (df['conf_norm'] * 0.25) +
+        (df['supp_norm'] * 0.70) + 
+        (df['conf_norm'] * 0.25) + 
         (df['lift_norm'] * 0.05)
     )
 
@@ -1693,7 +1655,7 @@ def main():
                     show_qty_impact=False
                 )
             # ======================================================
-            # TAB 5 — SAME BRAND CROSS CATEGORY
+            # TAB 5 — SAME BRAND CROSS CATEGORY (1 SECTION)
             # ======================================================
             with tab5:
                 df_sbc = aff["same_brand_cat"].copy()
@@ -1715,31 +1677,29 @@ def main():
                     "sbc_aff",
                     show_qty_impact=False
                 )
+                # ======================================================
+                # TAB 6 — SAME BRAND CROSS SUBCATEGORY (1 CATEGORY)
+                # ======================================================
+                with tab6:
+                    df_sbs = aff["same_brand_subcat"].copy()
+                    df_f = filter_affinity_base(df_sbs, sel_sec_aff, sel_plano)
 
+                    if df_f.empty:
+                        st.warning("Data Same Brand Cross Subcategory tidak tersedia.")
+                        st.stop()
 
-            # ======================================================
-            # TAB 6 — SAME BRAND CROSS SUBCATEGORY
-            # ======================================================
-            with tab6:
-                df_sbs = aff["same_brand_subcat"].copy()
-                df_f = filter_affinity_base(df_sbs, sel_sec_aff, sel_plano)
+                    df_f = df_f.dropna(subset=["brand"]).reset_index(drop=True)
 
-                if df_f.empty:
-                    st.warning("Data Same Brand Cross Subcategory tidak tersedia.")
-                    st.stop()
+                    st.subheader(f"SAME BRAND - CROSS SUBCATEGORY : {sel_sec_aff}")
 
-                df_f = df_f.dropna(subset=["brand"]).reset_index(drop=True)
-
-                st.subheader(f"SAME BRAND - CROSS SUBCATEGORY : {sel_sec_aff}")
-
-                render_affinity_tab(
-                    df_f,
-                    "subcategory_a",
-                    "subcategory_b",
-                    ["brand", "subcategory_a", "subcategory_b"],
-                    "sbs_aff",
-                    show_qty_impact=False
-                )
+                    render_affinity_tab(
+                        df_f,
+                        "subcategory_a",
+                        "subcategory_b",
+                        ["brand", "subcategory_a", "subcategory_b"],
+                        "sbs_aff",
+                        show_qty_impact=False
+                    )
 
         # ======================================================
         # TABEL MAPPING REFERENSI (PIVOT VERSION - CLEAN)

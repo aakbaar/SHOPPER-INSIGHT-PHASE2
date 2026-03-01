@@ -1328,6 +1328,7 @@ def main():
 
                     col_filters = st.columns([1]*len(all_filters), gap="large")
 
+
                     active_filters = {}
 
                     for j, filt_col in enumerate(all_filters):
@@ -1343,10 +1344,6 @@ def main():
                                         st.session_state[k] = True
 
                                 label = f"{filt_col}:"
-
-                                # ===============================
-                                # POPOVER (CHECKLIST AREA)
-                                # ===============================
                                 with st.popover(label):
 
                                     colA, colB = st.columns(2)
@@ -1356,14 +1353,12 @@ def main():
                                         if st.button("Select All", key=f"btn_all_{i}_{j}"):
                                             for k in item_keys:
                                                 st.session_state[k] = True
-                                            st.rerun()
 
                                     # CLEAR ALL
                                     with colB:
                                         if st.button("Clear All", key=f"btn_clear_{i}_{j}"):
                                             for k in item_keys:
                                                 st.session_state[k] = False
-                                            st.rerun()
 
                                     selected_vals = []
 
@@ -1371,47 +1366,27 @@ def main():
                                         k = f"chk_sw_{i}_{j}_{val}"
                                         if st.checkbox(val, key=k):
                                             selected_vals.append(val)
+                                    if selected_vals and len(selected_vals) < len(unique_vals):
+                                        tag_html = ""
+                                        for v in selected_vals:
+                                            tag_html += f"""
+                                            <span style="
+                                                display:inline-block;
+                                                background:#F1F5F9;
+                                                padding:6px 12px;
+                                                border-radius:20px;
+                                                margin:3px;
+                                                font-size:12px;
+                                                border:1px solid #E2E8F0;">
+                                                {v}
+                                            </span>
+                                            """
+                                        st.markdown(tag_html, unsafe_allow_html=True)            
 
-                                # ===============================
-                                # SELECTED TAGS (DI LUAR POPOVER)
-                                # ===============================
-                                if selected_vals and len(selected_vals) < len(unique_vals):
-
-                                    tag_html = """
-                                    <div style="
-                                        margin-top:8px;
-                                        padding:8px;
-                                        border-radius:12px;
-                                        background:#F8FAFC;
-                                        border:1px solid #E2E8F0;
-                                    ">
-                                    """
-
-                                    for v in selected_vals:
-                                        tag_html += f"""
-                                        <span style="
-                                            display:inline-block;
-                                            background:#FFFFFF;
-                                            padding:6px 12px;
-                                            border-radius:20px;
-                                            margin:4px 6px 4px 0px;
-                                            font-size:12px;
-                                            border:1px solid #CBD5E1;
-                                            box-shadow:0 1px 2px rgba(0,0,0,0.05);
-                                        ">
-                                            {v}
-                                        </span>
-                                        """
-
-                                    tag_html += "</div>"
-
-                                    st.markdown(tag_html, unsafe_allow_html=True)
-
-                                # ===============================
-                                # APPLY FILTER
-                                # ===============================
+                                # simpan state filter
                                 active_filters[filt_col] = selected_vals
 
+                                # apply filter
                                 if selected_vals:
                                     df_raw = df_raw[df_raw[filt_col].isin(selected_vals)]
 

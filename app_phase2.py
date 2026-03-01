@@ -1389,17 +1389,35 @@ def main():
                     total_sw = df_raw[df_raw["SWITCH_FLAG"] == "SWITCH"]["BUYER_ID"].nunique()
                     total_no = df_raw[df_raw["SWITCH_FLAG"] == "NO_SWITCH"]["BUYER_ID"].nunique()
                     
-                    # Logika untuk mencari Top Destination
+                   # Logika untuk mencari Top Destination (FIXED)
                     top_dest_name = "-"
                     top_dest_pct = 0.0
+
                     df_only_sw = df_raw[df_raw["SWITCH_FLAG"] == "SWITCH"]
-                    
+
                     if not df_only_sw.empty:
-                        dest_counts = df_only_sw.groupby(cfg["after_col"])["BUYER_ID"].nunique().reset_index()
+
+                        # 🔥 WAJIB: pastikan 1 buyer hanya 1 row
+                        df_unique_sw = (
+                            df_only_sw
+                            .drop_duplicates(subset=["BUYER_ID"])
+                        )
+
+                        dest_counts = (
+                            df_unique_sw
+                            .groupby(cfg["after_col"])["BUYER_ID"]
+                            .nunique()
+                            .reset_index()
+                        )
+
                         if not dest_counts.empty:
                             top_dest_row = dest_counts.loc[dest_counts["BUYER_ID"].idxmax()]
+
                             top_dest_name = str(top_dest_row[cfg["after_col"]])
-                            top_dest_pct = top_dest_row["BUYER_ID"] / total_sw if total_sw > 0 else 0.0
+                            top_dest_count = top_dest_row["BUYER_ID"]
+
+                            # denominator pakai total switchers
+                            top_dest_pct = top_dest_count / total_sw if total_sw > 0 else 0.0
 
                     # Panggil render 3 kartu
                     render_switching_cards(total_sw, total_no, top_dest_name, top_dest_pct)

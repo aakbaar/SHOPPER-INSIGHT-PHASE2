@@ -356,35 +356,48 @@ def render_performance_cards(df, is_category=False):
                     padding:2px 10px; border-radius:12px; font-size:12px; font-weight:bold; margin-top:4px;">
                     {icon} {val:+.2%}</div>"""
 
-    # Buat Kolom
-    cols = st.columns(4 if is_category else 3)
-    
-    # Style Kotak (Uniform height & padding)
-    card_container_style = """
+    card_style = """
         background-color: #F8F9FA; 
         border-radius: 8px; 
-        padding: 15px; 
-        min-height: 120px; 
+        padding: 12px 14px; 
+        height: 135px; 
         border: 1px solid #EEE;
         display: flex;
         flex-direction: column;
-        justify-content: center;
+        justify-content: space-between;
     """
 
-    # 1. Category Penetration
+    cols = st.columns(4 if is_category else 3)
+
+    # ==============================
+    # 1. CATEGORY PENETRATION
+    # ==============================
     if is_category:
         with cols[0]:
+
+            gr = metrics['pen_gr']
+            border_color = "#AEE3B2" if gr > 0 else "#E1B7B3"
+
             st.markdown(f"""
-                <div style="{card_container_style}">
-                    <p style="color:#666; font-size:14px; margin:0; font-weight:500;">Transaction Penetration</p>
-                    <div style="font-size:32px; font-weight:bold; color:#000; line-height:1.1;">{metrics['pen_val']:.2%}</div>
-                    {get_delta_html(metrics['pen_gr'])}
-                    <p style="color:#888; font-size:11px; margin:0;">Total Buyers: {metrics['buyer_total']:,}</p>
+                <div style="{card_style}; border-bottom:4px solid {border_color};">
+                    <p style="color:#6B7280; font-size:12px; margin:0; font-weight:600;">
+                        Transaction Penetration
+                    </p>
+                    <div style="font-size:30px; font-weight:800; margin-top:4px;">
+                        {metrics['pen_val']:.2%}
+                    </div>
+                    {get_delta_html(gr)}
+                    <p style="color:#9CA3AF; font-size:11px; margin-top:4px;">
+                        Total Buyers: {metrics['buyer_total']:,}
+                    </p>
                 </div>
             """, unsafe_allow_html=True)
 
-    # 2. Metrik Lainnya (Dinamis)
+    # ==============================
+    # 2. OTHER METRICS
+    # ==============================
     idx_start = 1 if is_category else 0
+
     m_list = [
         ("Purchase Frequency", metrics['freq_val'], metrics['freq_gr'], "{:.2f}"),
         ("Spend Per Buyer", metrics['spb_val'], metrics['spb_gr'], "Rp {:,.0f}"),
@@ -392,20 +405,24 @@ def render_performance_cards(df, is_category=False):
     ]
 
     for i, (label, val, gr, fmt) in enumerate(m_list):
+
+        # warna border mengikuti growth
+        border_color = "#AEE3B2" if gr > 0 else "#E1B7B3"
+
         with cols[idx_start + i]:
             st.markdown(f"""
-                <div style="{card_container_style}">
-                    <div>
-                        <p style="color:#6B7280; font-size:11px; margin:0; font-weight:600;">
-                            {label}
-                        </p>
-                        <div style="font-size:32px; font-weight:bold; color:#000; line-height:1.1;">{fmt.format(val)}</div> 
-                        </div>
-                        {get_delta_html(gr)}
+                <div style="{card_style}; border-bottom:4px solid {border_color};">
+                    <p style="color:#6B7280; font-size:12px; margin:0; font-weight:600;">
+                        {label}
+                    </p>
+                    <div style="font-size:30px; font-weight:800; margin-top:4px;">
+                        {fmt.format(val)}
                     </div>
-                    <p style="visibility:hidden; margin:0;">placeholder</p>
+                    {get_delta_html(gr)}
                 </div>
             """, unsafe_allow_html=True)
+
+    st.markdown("<br>", unsafe_allow_html=True)
 
 # ===============================================================
 # GLOBAL HELPERS (Sesuai Kolom Baru)
@@ -799,19 +816,6 @@ def render_switching_cards(total_sw, total_no, top_dest_name, top_dest_pct):
 
     pct_sw = total_sw / total
     pct_no = total_no / total
-
-    card_style = """
-        background-color: #F8F9FA; 
-        border-radius: 8px; 
-        padding: 15px; 
-        min-height: 100px; 
-        border: 1px solid #EEE;
-        display: flex;
-        flex-direction: column;
-        justify-content: center;
-        position: relative;
-        overflow: hidden;
-    """
 
     card_style = """
         background-color: #F8F9FA; 

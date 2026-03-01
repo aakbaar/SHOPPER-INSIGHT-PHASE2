@@ -1429,6 +1429,10 @@ def main():
 
                     st.markdown("<br>", unsafe_allow_html=True)
 
+                    # --- ROW 4: TWO PIE CHARTS SIDE BY SIDE ---
+                    st.markdown("<br>", unsafe_allow_html=True)
+                    col_pie1, col_pie2 = st.columns(2)
+
                     # =========================================================
                     # LEFT — DONUT SWITCH VS NO SWITCH (GREEN EXECUTIVE)
                     # =========================================================

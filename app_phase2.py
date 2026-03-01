@@ -396,10 +396,8 @@ def render_performance_cards(df, is_category=False):
             st.markdown(f"""
                 <div style="{card_container_style}">
                     <div>
-                        <p style="color:#6B7280; font-size:11px; margin:0; font-weight:600;">
-                            {label}
-                        </p>
                         <div style="font-size:32px; font-weight:bold; color:#000; line-height:1.1;">{fmt.format(val)}</div> 
+                            {fmt.format(val)}
                         </div>
                         {get_delta_html(gr)}
                     </div>

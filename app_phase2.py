@@ -1476,7 +1476,7 @@ def main():
                                             f"<span style='font-size:14px; color:#6B7280'>of {total:,} Total Buyers</span>"
                                         ),
                                         x=0.5,
-                                        y=0.5,
+                                        y=0.45,
                                         showarrow=False,
                                         align="center"
                                     )

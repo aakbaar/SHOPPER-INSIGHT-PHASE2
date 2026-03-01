@@ -383,11 +383,11 @@ def render_performance_cards(df, is_category=False):
                     <p style="color:#6B7280; font-size:12px; margin:0; font-weight:600;">
                         Transaction Penetration
                     </p>
-                    <div style="font-size:28px; font-weight:800; margin-top:4px;">
+                    <div style="font-size:28px; font-weight:800; margin-top:1px;">
                         {metrics['pen_val']:.2%}
                     </div>
                     {get_delta_html(gr)}
-                    <p style="color:#9CA3AF; font-size:9px; margin-top:4px;">
+                    <p style="color:#9CA3AF; font-size:11px; margin-top:4px;">
                         Total Buyers: {metrics['buyer_total']:,}
                     </p>
                 </div>
@@ -415,7 +415,7 @@ def render_performance_cards(df, is_category=False):
                     <p style="color:#6B7280; font-size:12px; margin:0; font-weight:600;">
                         {label}
                     </p>
-                    <div style="font-size:28px; font-weight:800; margin-top:4px;">
+                    <div style="font-size:28px; font-weight:800; margin-top:1px;">
                         {fmt.format(val)}
                     </div>
                     {get_delta_html(gr)}

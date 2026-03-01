@@ -394,7 +394,7 @@ def render_performance_cards(df, is_category=False):
     for i, (label, val, gr, fmt) in enumerate(m_list):
         with cols[idx_start + i]:
             st.markdown(f"""
-                <div style="{card_style}">
+                <div style="{card_container_style}">
                     <div>
                         <p style="color:#6B7280; font-size:11px; margin:0; font-weight:600;">
                             {label}

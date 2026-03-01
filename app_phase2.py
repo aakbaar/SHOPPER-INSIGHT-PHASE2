@@ -399,7 +399,7 @@ def render_performance_cards(df, is_category=False):
                         <p style="color:#6B7280; font-size:11px; margin:0; font-weight:600;">
                             {label}
                         </p>
-                        <div style="font-size:27px; font-weight:700; color:#111827; margin-top:4px;">
+                        <div style="font-size:27px; font-weight:700; color:#111827; line-height:1.1; margin-top:4px;">
                             {fmt.format(val)}
                         </div>
                         {get_delta_html(gr)}

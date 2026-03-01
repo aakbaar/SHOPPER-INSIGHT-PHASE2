@@ -1368,6 +1368,22 @@ def main():
                                         k = f"chk_sw_{i}_{j}_{val}"
                                         if st.checkbox(val, key=k):
                                             selected_vals.append(val)
+                                    if selected_vals and len(selected_vals) < len(unique_vals):
+                                        tag_html = ""
+                                        for v in selected_vals:
+                                            tag_html += f"""
+                                            <span style="
+                                                display:inline-block;
+                                                background:#F1F5F9;
+                                                padding:6px 12px;
+                                                border-radius:20px;
+                                                margin:3px;
+                                                font-size:12px;
+                                                border:1px solid #E2E8F0;">
+                                                {v}
+                                            </span>
+                                            """
+                                        st.markdown(tag_html, unsafe_allow_html=True)            
 
                                 # simpan state filter
                                 active_filters[filt_col] = selected_vals

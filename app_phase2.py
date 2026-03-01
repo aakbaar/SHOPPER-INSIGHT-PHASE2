@@ -1429,67 +1429,163 @@ def main():
 
                     st.markdown("<br>", unsafe_allow_html=True)
 
-                    # --- ROW 4: TWO PIE CHARTS SIDE BY SIDE ---
-                    st.markdown("<br>", unsafe_allow_html=True)
-                    col_pie1, col_pie2 = st.columns(2)
-
+                    # =========================================================
+                    # LEFT — DONUT SWITCH VS NO SWITCH (GREEN EXECUTIVE)
+                    # =========================================================
                     with col_pie1:
-                        # Judul tanpa div pembungkus yang bikin error
-                        st.markdown("<h4 style='text-align: center; color: #475569; font-weight: 600;'>SWITCH VS NO SWITCH COMPOSITION</h4>", unsafe_allow_html=True)
-                        
-                        fig_overall = px.pie(
-                            values=[total_sw, total_no], names=["SWITCH", "NO_SWITCH"],
-                            hole=0.6, 
-                            color_discrete_map={"NO_SWITCH": "#AEE3B2", "SWITCH": "#E1B7B3"} 
-                        )
-                        fig_overall.update_layout(
-                            margin=dict(t=20, b=10, l=10, r=10), # Beri sedikit jarak atas (t=20)
-                            height=320, 
-                            showlegend=True, 
-                            paper_bgcolor='rgba(0,0,0,0)', 
-                            plot_bgcolor='rgba(0,0,0,0)'
-                        )
-                        fig_overall.update_traces(textinfo='percent+label', textfont_size=12)
-                        st.plotly_chart(fig_overall, use_container_width=True)
 
-                    with col_pie2:
-                        # Judul tanpa div pembungkus
-                        st.markdown("<h4 style='text-align: center; color: #475569; font-weight: 600;'>TOP DESTINATION SWITCH</h4>", unsafe_allow_html=True)
-                        
-                        if not df_only_sw.empty:
-                            dest_data = df_only_sw.groupby(cfg["after_col"])["BUYER_ID"].nunique().reset_index()
-                            dest_data = dest_data.nlargest(10, "BUYER_ID")
-                            
-                            premium_colors = ['#FF6B6B', '#4ECDC4', '#45B7D1', '#96CEB4', '#FFEEAD', '#D4A5A5', '#9B59B6', '#3498DB', '#F1C40F', '#E67E22']
-                            
-                            fig_dest_pie = px.pie(
-                                dest_data, values="BUYER_ID", names=cfg["after_col"],
-                                color_discrete_sequence=premium_colors
+                        total = total_sw + total_no
+
+                        if total > 0:
+
+                            pct_sw = total_sw / total
+
+                            fig_overall = px.pie(
+                                values=[total_sw, total_no],
+                                names=["SWITCH", "NO SWITCH"],
+                                hole=0.65,
+                                color_discrete_sequence=["#16A34A", "#BBF7D0"]  # Hijau solid + soft
                             )
-                            fig_dest_pie.update_layout(
-                                margin=dict(t=20, b=10, l=10, r=10), 
-                                height=320, 
-                                paper_bgcolor='rgba(0,0,0,0)', 
+
+                            fig_overall.update_traces(
+                                textinfo="percent",
+                                textfont_size=14,
+                                marker=dict(line=dict(color="white", width=2))
+                            )
+
+                            fig_overall.update_layout(
+                                height=420,
+                                margin=dict(t=80, b=20, l=20, r=20),
+
+                                title=dict(
+                                    text="SWITCH VS NO SWITCH",
+                                    x=0.5,
+                                    xanchor="center",
+                                    font=dict(size=20, color="#475569")
+                                ),
+
+                                annotations=[
+                                    dict(
+                                        text=(
+                                            f"<b style='font-size:28px'>{pct_sw:.0%}</b><br>"
+                                            f"<span style='font-size:14px'>{total_sw:,} Switchers</span><br>"
+                                            f"<span style='font-size:14px; color:#6B7280'>of {total:,} Total Buyers</span>"
+                                        ),
+                                        x=0.5,
+                                        y=0.5,
+                                        showarrow=False,
+                                        align="center"
+                                    )
+                                ],
+
+                                showlegend=True,
+                                paper_bgcolor='rgba(0,0,0,0)',
                                 plot_bgcolor='rgba(0,0,0,0)'
                             )
-                            fig_dest_pie.update_traces(
-                                textinfo='percent', 
-                                textfont_size=12, 
-                                marker=dict(line=dict(color='#FFFFFF', width=2))
+
+                            st.plotly_chart(fig_overall, use_container_width=True)
+
+                            st.caption(
+                                f"Switchers: {total_sw:,} | Retained: {total_no:,}"
                             )
+
+                        else:
+                            st.info("No data available.")
+
+
+                    # =========================================================
+                    # RIGHT — TOP DESTINATION (GREEN TONE + INSIGHT)
+                    # =========================================================
+                    with col_pie2:
+
+                        if not df_only_sw.empty:
+
+                            dest_data = (
+                                df_only_sw
+                                .drop_duplicates(subset=["BUYER_ID"])  # penting!
+                                .groupby(cfg["after_col"])["BUYER_ID"]
+                                .nunique()
+                                .reset_index()
+                                .sort_values("BUYER_ID", ascending=False)
+                            )
+
+                            total_dest = total_sw
+
+                            fig_dest_pie = px.pie(
+                                dest_data,
+                                values="BUYER_ID",
+                                names=cfg["after_col"],
+                                color_discrete_sequence=[
+                                "#1F3A5F",  # deep navy
+                                "#2A9D8F",  # teal
+                                "#E9C46A",  # soft gold
+                                "#F4A261",  # warm orange
+                                "#E76F51",  # muted coral
+                                "#6D597A",  # soft purple
+                                "#8AB17D",  # sage green
+                                "#457B9D",  # steel blue
+                                "#B5838D",  # dusty rose
+                                "#84A59D",  # grey teal
+                                "#3D405B",  # dark slate
+                                "#A8DADC"   # light aqua
+                            ]
+                            )
+
+                            fig_dest_pie.update_traces(
+                                textinfo="percent",          # atau "none" kalau mau super clean
+                                textposition="inside",       # paksa di dalam
+                                insidetextorientation="horizontal",
+                                pull=0,                      # pastikan tidak ada slice ditarik
+                                marker=dict(line=dict(color="white", width=2))
+                            )
+
+                            fig_dest_pie.update_layout(
+                                height=420,
+                                margin=dict(t=70, b=20, l=20, r=20),
+                                title=dict(
+                                    text="TOP DESTINATION SWITCH",
+                                    x=0.5,
+                                    xanchor="center",
+                                    font=dict(size=20, color="#475569")
+                                ),
+                                paper_bgcolor='rgba(0,0,0,0)',
+                                plot_bgcolor='rgba(0,0,0,0)'
+                            )
+
                             st.plotly_chart(fig_dest_pie, use_container_width=True)
+
+                            # 🔥 Insight tambahan otomatis
+                            top_row = dest_data.iloc[0]
+                            top_share = top_row["BUYER_ID"] / total_dest
+
+
                         else:
                             st.info("No switch data to analyze for this filter.")
 
-                    # Garis pemisah estetik sebelum chart Promo
                     st.markdown("<hr style='border: 1px dashed #E2E8F0; margin: 30px 0;'>", unsafe_allow_html=True)
 
                     # --- ROW 5: PROMO INFLUENCE ---
                     st.markdown("<h4 style='text-align: center; color: #475569; font-weight: 600;'>PROMO INFLUENCE ON DESTINATION SWITCH</h4>", unsafe_allow_html=True)
                     st.markdown("<br>", unsafe_allow_html=True)
                     
-                    top_brands = df_raw.groupby(cfg["after_col"])["BUYER_ID"].nunique().nlargest(15).index
-                    df_promo = df_raw[df_raw[cfg["after_col"]].isin(top_brands)]
+                    # 🔥 Ambil hanya SWITCHERS
+                    # 🔥 Ambil hanya SWITCHERS
+                    df_switch = df_raw[df_raw["SWITCH_FLAG"] == "SWITCH"].copy()
+
+                    # 🔥 Pastikan benar-benar pindah (BEFORE != AFTER)
+                    df_switch = df_switch[
+                        df_switch[cfg["main_col"]] != df_switch[cfg["after_col"]]
+                    ]
+
+                    # 🔥 Ambil top destination dari switchers saja
+                    top_brands = (
+                        df_switch.groupby(cfg["after_col"])["BUYER_ID"]
+                        .nunique()
+                        .nlargest(15)
+                        .index
+                    )
+
+                    df_promo = df_switch[df_switch[cfg["after_col"]].isin(top_brands)]
                     
                     if not df_promo.empty:
                         promo_agg = df_promo.groupby([cfg["after_col"], "PROMO_FLAG"])["BUYER_ID"].nunique().reset_index()
@@ -1498,8 +1594,8 @@ def main():
                         
                         fig_promo = px.bar(
                             promo_agg, x=cfg["after_col"], y="PERCENTAGE", color="PROMO_FLAG",
-                            color_discrete_map={"PROMO": "#FAD12D", "NON PROMO": "#642C2C"},
-                            barmode="stack",
+                            color_discrete_map={"PROMO": "#27AE60", "NON PROMO": "#919191"},
+                            barmode="stack",    
                             text=promo_agg["PERCENTAGE"].apply(lambda x: f"{x:.1%}") 
                         )
                         fig_promo.update_layout(

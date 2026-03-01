@@ -1328,92 +1328,92 @@ def main():
 
                     col_filters = st.columns([1]*len(all_filters), gap="large")
 
-active_filters = {}
+                    active_filters = {}
 
-for j, filt_col in enumerate(all_filters):
-    with col_filters[j]:
-        if filt_col in df_raw.columns:
+                    for j, filt_col in enumerate(all_filters):
+                        with col_filters[j]:
+                            if filt_col in df_raw.columns:
 
-            unique_vals = sorted(df_raw[filt_col].dropna().unique().tolist())
-            item_keys = [f"chk_sw_{i}_{j}_{val}" for val in unique_vals]
+                                unique_vals = sorted(df_raw[filt_col].dropna().unique().tolist())
+                                item_keys = [f"chk_sw_{i}_{j}_{val}" for val in unique_vals]
 
-            # INIT default checked
-            for k in item_keys:
-                if k not in st.session_state:
-                    st.session_state[k] = True
+                                # INIT default checked
+                                for k in item_keys:
+                                    if k not in st.session_state:
+                                        st.session_state[k] = True
 
-            label = f"{filt_col}:"
+                                label = f"{filt_col}:"
 
-            # ===============================
-            # POPOVER (CHECKLIST AREA)
-            # ===============================
-            with st.popover(label):
+                                # ===============================
+                                # POPOVER (CHECKLIST AREA)
+                                # ===============================
+                                with st.popover(label):
 
-                colA, colB = st.columns(2)
+                                    colA, colB = st.columns(2)
 
-                # SELECT ALL
-                with colA:
-                    if st.button("Select All", key=f"btn_all_{i}_{j}"):
-                        for k in item_keys:
-                            st.session_state[k] = True
-                        st.rerun()
+                                    # SELECT ALL
+                                    with colA:
+                                        if st.button("Select All", key=f"btn_all_{i}_{j}"):
+                                            for k in item_keys:
+                                                st.session_state[k] = True
+                                            st.rerun()
 
-                # CLEAR ALL
-                with colB:
-                    if st.button("Clear All", key=f"btn_clear_{i}_{j}"):
-                        for k in item_keys:
-                            st.session_state[k] = False
-                        st.rerun()
+                                    # CLEAR ALL
+                                    with colB:
+                                        if st.button("Clear All", key=f"btn_clear_{i}_{j}"):
+                                            for k in item_keys:
+                                                st.session_state[k] = False
+                                            st.rerun()
 
-                selected_vals = []
+                                    selected_vals = []
 
-                for val in unique_vals:
-                    k = f"chk_sw_{i}_{j}_{val}"
-                    if st.checkbox(val, key=k):
-                        selected_vals.append(val)
+                                    for val in unique_vals:
+                                        k = f"chk_sw_{i}_{j}_{val}"
+                                        if st.checkbox(val, key=k):
+                                            selected_vals.append(val)
 
-            # ===============================
-            # SELECTED TAGS (DI LUAR POPOVER)
-            # ===============================
-            if selected_vals and len(selected_vals) < len(unique_vals):
+                                # ===============================
+                                # SELECTED TAGS (DI LUAR POPOVER)
+                                # ===============================
+                                if selected_vals and len(selected_vals) < len(unique_vals):
 
-                tag_html = """
-                <div style="
-                    margin-top:8px;
-                    padding:8px;
-                    border-radius:12px;
-                    background:#F8FAFC;
-                    border:1px solid #E2E8F0;
-                ">
-                """
+                                    tag_html = """
+                                    <div style="
+                                        margin-top:8px;
+                                        padding:8px;
+                                        border-radius:12px;
+                                        background:#F8FAFC;
+                                        border:1px solid #E2E8F0;
+                                    ">
+                                    """
 
-                for v in selected_vals:
-                    tag_html += f"""
-                    <span style="
-                        display:inline-block;
-                        background:#FFFFFF;
-                        padding:6px 12px;
-                        border-radius:20px;
-                        margin:4px 6px 4px 0px;
-                        font-size:12px;
-                        border:1px solid #CBD5E1;
-                        box-shadow:0 1px 2px rgba(0,0,0,0.05);
-                    ">
-                        {v}
-                    </span>
-                    """
+                                    for v in selected_vals:
+                                        tag_html += f"""
+                                        <span style="
+                                            display:inline-block;
+                                            background:#FFFFFF;
+                                            padding:6px 12px;
+                                            border-radius:20px;
+                                            margin:4px 6px 4px 0px;
+                                            font-size:12px;
+                                            border:1px solid #CBD5E1;
+                                            box-shadow:0 1px 2px rgba(0,0,0,0.05);
+                                        ">
+                                            {v}
+                                        </span>
+                                        """
 
-                tag_html += "</div>"
+                                    tag_html += "</div>"
 
-                st.markdown(tag_html, unsafe_allow_html=True)
+                                    st.markdown(tag_html, unsafe_allow_html=True)
 
-            # ===============================
-            # APPLY FILTER
-            # ===============================
-            active_filters[filt_col] = selected_vals
+                                # ===============================
+                                # APPLY FILTER
+                                # ===============================
+                                active_filters[filt_col] = selected_vals
 
-            if selected_vals:
-                df_raw = df_raw[df_raw[filt_col].isin(selected_vals)]
+                                if selected_vals:
+                                    df_raw = df_raw[df_raw[filt_col].isin(selected_vals)]
 
                     if df_raw.empty:
                         st.warning("No data available for this filter.")

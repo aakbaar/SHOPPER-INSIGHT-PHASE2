@@ -360,7 +360,7 @@ def render_performance_cards(df, is_category=False):
         background-color: #F8F9FA; 
         border-radius: 8px; 
         padding: 12px 14px; 
-        height: 115px; 
+        height: 125px; 
         border: 1px solid #EEE;
         display: flex;
         flex-direction: column;
@@ -380,10 +380,10 @@ def render_performance_cards(df, is_category=False):
 
             st.markdown(f"""
                 <div style="{card_style}; border-bottom:4px solid {border_color};">
-                    <p style="color:#6B7280; font-size:10px; margin:0; font-weight:600;">
+                    <p style="color:#6B7280; font-size:12px; margin:0; font-weight:600;">
                         Transaction Penetration
                     </p>
-                    <div style="font-size:25px; font-weight:800; margin-top:4px;">
+                    <div style="font-size:28px; font-weight:800; margin-top:4px;">
                         {metrics['pen_val']:.2%}
                     </div>
                     {get_delta_html(gr)}
@@ -412,10 +412,10 @@ def render_performance_cards(df, is_category=False):
         with cols[idx_start + i]:
             st.markdown(f"""
                 <div style="{card_style}; border-bottom:4px solid {border_color};">
-                    <p style="color:#6B7280; font-size:10px; margin:0; font-weight:600;">
+                    <p style="color:#6B7280; font-size:12px; margin:0; font-weight:600;">
                         {label}
                     </p>
-                    <div style="font-size:25px; font-weight:800; margin-top:4px;">
+                    <div style="font-size:28px; font-weight:800; margin-top:4px;">
                         {fmt.format(val)}
                     </div>
                     {get_delta_html(gr)}

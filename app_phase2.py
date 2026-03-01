@@ -933,9 +933,9 @@ def render_category_promo_share_chart(df):
 
     import plotly.express as px
 
-    st.markdown ("------")
+    st.markdown("------")
     st.markdown("### CATEGORY PROMO DRIVEN ")
-    st.caption("Share customer yang membeli karena promo vs tanpa promo pada tiap kategori")
+    st.caption("Distribusi share pembelian karena promo vs non-promo per kategori")
 
     temp = df.copy()
 
@@ -953,7 +953,7 @@ def render_category_promo_share_chart(df):
     ) / 2
 
     # ==============================
-    # Reshape untuk stacked chart
+    # Reshape
     # ==============================
     chart_df = temp.melt(
         id_vars="CATEGORY",
@@ -968,30 +968,41 @@ def render_category_promo_share_chart(df):
     })
 
     # ==============================
-    # Plot (1 chart only)
+    # Vertical 100% Stacked
     # ==============================
     fig = px.bar(
         chart_df,
-        y="CATEGORY",
-        x="SHARE",
-        orientation="h",
+        x="CATEGORY",
+        y="SHARE",
         color="TYPE",
         barmode="stack",
         text=chart_df["SHARE"].apply(lambda x: f"{x:.0%}"),
         color_discrete_map={
-            "PROMO": "#53F12F",
-            "NON PROMO": "#FC4040"
+            "PROMO": "#1F3A5F",       # Green executive
+            "NON PROMO": "#94A3B8"    # Soft gray
         }
     )
 
     fig.update_layout(
-        xaxis_tickformat=".0%",
-        height=500,
-        showlegend=True,
-        legend_title=""
+        yaxis_tickformat=".0%",
+        height=550,
+        legend_title="",
+        xaxis_title="",
+        yaxis_title="Percentage",
+        xaxis_tickangle=-45,
+        bargap=0.15,
+        template="plotly_white"
+    )
+
+    fig.update_traces(
+        textposition="inside",
+        insidetextfont=dict(color="white", size=12),
+        marker_line_width=1,
+        marker_line_color="white"
     )
 
     st.plotly_chart(fig, use_container_width=True)
+    
 def normalize_brand_columns(df):
     """
     Auto-detect dan mapping kolom brand menjadi brand_a & brand_b

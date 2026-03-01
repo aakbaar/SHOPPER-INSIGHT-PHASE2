@@ -394,10 +394,17 @@ def render_performance_cards(df, is_category=False):
     for i, (label, val, gr, fmt) in enumerate(m_list):
         with cols[idx_start + i]:
             st.markdown(f"""
-                <div style="{card_container_style}">
-                    <p style="color:#666; font-size:14px; margin:0; font-weight:500;">{label}</p>
-                    <div style="font-size:32px; font-weight:bold; color:#000; line-height:1.1;">{fmt.format(val)}</div>
-                    {get_delta_html(gr)}
+                <div style="{card_style}">
+                    <div>
+                        <p style="color:#6B7280; font-size:11px; margin:0; font-weight:600;">
+                            {label}
+                        </p>
+                        <div style="font-size:27px; font-weight:700; color:#111827; margin-top:4px;">
+                            {fmt.format(val)}
+                        </div>
+                        {get_delta_html(gr)}
+                    </div>
+                    <p style="visibility:hidden; margin:0;">placeholder</p>
                 </div>
             """, unsafe_allow_html=True)
 

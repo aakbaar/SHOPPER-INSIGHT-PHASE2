@@ -360,7 +360,7 @@ def render_performance_cards(df, is_category=False):
         background-color: #F8F9FA; 
         border-radius: 8px; 
         padding: 12px 14px; 
-        height: 135px; 
+        height: 105px; 
         border: 1px solid #EEE;
         display: flex;
         flex-direction: column;

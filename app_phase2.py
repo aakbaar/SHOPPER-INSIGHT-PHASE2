@@ -559,7 +559,7 @@ def reorder_final(df, level):
     return df[existing_ids + existing_metrics + others]
 df_p = pd.DataFrame()
 
-def render_affinity_tab(df, col_a, col_b, filter_cols, key_prefix, show_qty_impact=True, extra_display_cols=[]):
+def render_affinity_tab(df, col_a, col_b, filter_cols, key_prefix, show_qty_impact=True, show_top10=True, extra_display_cols=[]):
     """
     Fungsi render yang fleksibel untuk menampilkan Matrix Affinity 
     dan Tabel QTY Impact dengan kolom tambahan.
@@ -679,34 +679,32 @@ def render_affinity_tab(df, col_a, col_b, filter_cols, key_prefix, show_qty_impa
         }),
         use_container_width=True
     )
+ 
     # ========================================================
-    # 8.5 RENDER TOP 10 AFFINITY (BARU DITAMBAHKAN)
-    # ========================================================
-    st.markdown("<br>", unsafe_allow_html=True)
-    st.write("**TOP 10 AFFINITY PAIRS**")
-    st.info("Menampilkan 10 kombinasi pasangan dengan skor Affinity tertinggi")
-    
-    # Hitung rata-rata weighted_score per pasangan, urutkan dari terbesar, ambil 10 teratas
-    top_10_df = df_filtered.groupby([col_a, col_b])['weighted_score'].mean().reset_index()
-    top_10_df = top_10_df.sort_values(by='weighted_score', ascending=False).head(10)
-    
-    # Rapikan nama kolom agar tampil cantik di tabel
-    top_10_display = top_10_df.copy()
-    top_10_display.columns = [col_a.upper(), col_b.upper(), 'AFFINITY SCORE']
-    
-    # Render tabel Top 10
-    st.dataframe(
-        top_10_display.style.format({'AFFINITY SCORE': '{:.2%}'})
-        .set_properties(**{
-            'background-color': 'transparent', 
-            'color': '#333333', 
-            'border': '1px solid #EEEEEE',
-            'font-size': '12px',
-            'font-weight': '500'
-        }),
-        use_container_width=True,
-        hide_index=True
-    )
+    if show_top10:
+
+        st.markdown("<br>", unsafe_allow_html=True)
+        st.write("**TOP 10 AFFINITY PAIRS**")
+        st.info("Menampilkan 10 kombinasi pasangan dengan skor Affinity tertinggi")
+        
+        top_10_df = df_filtered.groupby([col_a, col_b])['weighted_score'].mean().reset_index()
+        top_10_df = top_10_df.sort_values(by='weighted_score', ascending=False).head(10)
+        
+        top_10_display = top_10_df.copy()
+        top_10_display.columns = [col_a.upper(), col_b.upper(), 'AFFINITY SCORE']
+        
+        st.dataframe(
+            top_10_display.style.format({'AFFINITY SCORE': '{:.2%}'})
+            .set_properties(**{
+                'background-color': 'transparent', 
+                'color': '#333333', 
+                'border': '1px solid #EEEEEE',
+                'font-size': '12px',
+                'font-weight': '500'
+            }),
+            use_container_width=True,
+            hide_index=True
+        )
 
     # ========================================================
     # 9. RENDER QTY IMPACT (PERUBAHAN 2: MENGHAPUS DUPLIKAT)
@@ -1753,7 +1751,8 @@ def main():
                     "brand_b",
                     ["brand_a", "brand_b", "category_a", "category_b"],
                     "bc_aff",
-                    show_qty_impact=False
+                    show_qty_impact=False,
+                    show_top10=False
                 )
 
             # ======================================================
@@ -1777,7 +1776,8 @@ def main():
                     "brand_b",
                     ["brand_a", "brand_b", "subcategory_a", "subcategory_b"],
                     "bs_aff",
-                    show_qty_impact=False
+                    show_qty_impact=False,
+                    show_top10=False
                 )
             # ======================================================
             # TAB 5 — SAME BRAND CROSS CATEGORY (1 SECTION)

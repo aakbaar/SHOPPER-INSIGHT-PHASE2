@@ -379,11 +379,11 @@ def render_performance_cards(df, is_category=False):
             border_color = "#AEE3B2" if gr > 0 else "#E1B7B3"
 
             st.markdown(f"""
-                <div style="{card_style}; border-bottom:1px solid {border_color};">
+                <div style="{card_style}; border-bottom:4px solid {border_color};">
                     <p style="color:#6B7280; font-size:12px; margin:0; font-weight:600;">
                         Transaction Penetration
                     </p>
-                    <div style="font-size:28px; font-weight:700; margin-top:0px;">
+                    <div style="font-size:28px; font-weight:500; margin-top:0px;">
                         {metrics['pen_val']:.2%}
                     </div>
                     {get_delta_html(gr)}
@@ -411,11 +411,11 @@ def render_performance_cards(df, is_category=False):
 
         with cols[idx_start + i]:
             st.markdown(f"""
-                <div style="{card_style}; border-bottom:1px solid {border_color};">
+                <div style="{card_style}; border-bottom:4px solid {border_color};">
                     <p style="color:#6B7280; font-size:12px; margin:0; font-weight:600;">
                         {label}
                     </p>
-                    <div style="font-size:28px; font-weight:700; margin-top:0px;">
+                    <div style="font-size:28px; font-weight:500; margin-top:0px;">
                         {fmt.format(val)}
                     </div>
                     {get_delta_html(gr)}

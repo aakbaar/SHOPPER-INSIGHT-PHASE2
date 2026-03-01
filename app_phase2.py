@@ -1576,7 +1576,7 @@ def main():
                                 height=420,
                                 margin=dict(t=70, b=20, l=20, r=20),
                                 title=dict(
-                                    text="TOP DESTINATION SWITCH",
+                                    text="DESTINATION SWITCH",
                                     x=0.5,
                                     xanchor="center",
                                     font=dict(size=20, color="#475569")

@@ -1459,7 +1459,7 @@ def main():
 
                             fig_overall.update_layout(
                                 height=420,
-                                margin=dict(t=80, b=20, l=20, r=20),
+                                margin=dict(t=70, b=20, l=20, r=20),
 
                                 title=dict(
                                     text="SWITCH VS NO SWITCH",
@@ -1476,7 +1476,7 @@ def main():
                                             f"<span style='font-size:14px; color:#6B7280'>of {total:,} Total Buyers</span>"
                                         ),
                                         x=0.5,
-                                        y=0.45,
+                                        y=0.5,
                                         showarrow=False,
                                         align="center"
                                     )

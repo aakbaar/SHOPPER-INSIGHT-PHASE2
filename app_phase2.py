@@ -227,8 +227,19 @@ st.markdown("""
 def load_perf_file(level, versi):
     filename = f"perf_{level}_phase2_{versi.lower()}.csv"
     if os.path.exists(filename):
-        mtime = os.path.getmtime(filename)
-        return pd.read_csv(filename)
+        df = pd.read_csv(filename)
+
+        # 🔧 SAMAKAN NAMA KOLOM PENETRATION
+        rename_map = {
+            "PENETRATION_BEFORE": "TRANSACTION_PENETRATION_BEFORE",
+            "PENETRATION_AFTER": "TRANSACTION_PENETRATION_AFTER",
+            "PENETRATION_GROWTH": "TRANSACTION_PENETRATION_GROWTH"
+        }
+
+        df = df.rename(columns=rename_map)
+
+        return df
+
     return pd.DataFrame()
 
 @st.cache_data

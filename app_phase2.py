@@ -245,7 +245,7 @@ h3 { font-size: 16px; }
 /* ========================= */
 
 section[data-testid="stSidebar"] {
-    width: 220px !important;
+    width: 200px !important;
 }
 
 /* ========================= */

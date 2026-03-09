@@ -1,5 +1,221 @@
 import streamlit as st
+import time
 
+if "authenticated" not in st.session_state:
+    st.session_state.authenticated = False
+
+if "session_expired" not in st.session_state:
+    st.session_state.session_expired = False
+
+query = st.query_params
+
+# hanya restore login jika belum ada session aktif
+if "auth" in query and not st.session_state.authenticated:
+    st.session_state.authenticated = True
+    st.session_state.login_time = time.time()
+    
+# Konfigurasi halaman
+st.set_page_config(page_title="Shopper Category Insight", layout="wide")
+
+# CSS untuk mereplikasi desain dashboard
+st.markdown("""
+<style>
+    /* Background utama */
+    .stApp {
+        background-color: #ffffff;
+    }
+
+    /* Container Login */
+    .login-container {
+        max-width: 500px;
+        margin: auto;
+        padding-top: 0vh;
+        text-align: center;
+        font-family: 'Inter', sans-serif;
+    }
+
+    /* Header Styling */
+    .header-main {
+        font-size: 48px;
+        font-weight: 900;
+        color: #1e293b;
+        line-height: 0.9;
+        letter-spacing: -1px;
+        margin-bottom: 0px;
+    }
+    .header-accent {
+        font-size: 48px;
+        font-weight: 900;
+        color: #991b1b; /* Deep Red Dashboard */
+        line-height: 0.9;
+        letter-spacing: -1px;
+    }
+    .header-sub {
+        font-size: 15px;
+        font-weight: 700;
+        color: #1e293b;
+        letter-spacing: 3px;
+        margin-top: 15px;
+        text-transform: uppercase;
+    }
+
+    /* Input Fields */
+    div[data-baseweb="input"] {
+        background-color: #f1f5f9 !important;
+        border-radius: 18px !important;
+        border: 1px solid transparent !important;
+        padding: 8px !important;
+        margin-bottom: 10px;
+    }
+    div[data-baseweb="input"]:focus-within {
+        border: 1px solid #e2e8f0 !important;
+    }
+
+    /* Tombol Login (Deep Red dengan Glow) */
+    div.stButton > button,
+    div.stForm button {
+        background-color: #800000 !important; /* Maroon/Deep Red */
+        color: white !important;
+        border: none !important;
+        padding: 15px 45px !important;
+        border-radius: 15px !important;
+        font-weight: 700 !important;
+        font-size: 16px !important;
+        box-shadow: 0 10px 25px rgba(128, 0, 0, 0.3) !important;
+        transition: all 0.3s ease !important;
+        width: auto !important;
+        display: block;
+        margin-top: 20px;
+    }
+
+    /* Hover effect */
+    div.stButton > button:hover,
+    div.stForm button:hover {
+        background-color: #991b1b !important;
+        transform: translateY(-2px);
+        box-shadow: 0 15px 30px rgba(128, 0, 0, 0.4) !important;
+    }
+    /* Hapus tombol di dalam field password */
+    div[data-baseweb="input"] button {
+        display: none !important;
+    }
+
+    /* Menghilangkan elemen default Streamlit */
+    header {visibility: hidden;}
+    footer {visibility: hidden;}
+</style>
+""", unsafe_allow_html=True)
+
+
+def login_page():
+
+    SESSION_TIMEOUT = 600
+    # cek apakah session masih valid
+    if st.session_state.authenticated and st.session_state.login_time:
+        elapsed = time.time() - st.session_state.login_time
+        if elapsed > SESSION_TIMEOUT:
+            st.session_state.session_expired = True
+    # =========================
+    # POPUP SESSION EXPIRED
+    # =========================
+    if st.session_state.session_expired:
+
+        st.markdown("""
+        <style>
+        .session-popup{
+            position:fixed;
+            top:50%;
+            left:50%;
+            transform:translate(-50%,-50%);
+            background:white;
+            padding:40px 50px;
+            border-radius:18px;
+            box-shadow:0 25px 70px rgba(0,0,0,0.25);
+            text-align:center;
+            z-index:9999;
+            font-family:'Inter', sans-serif;
+        }
+
+        /* Title */
+        .session-title{
+            font-size:28px;
+            font-weight:900;
+            color:#991b1b;
+            letter-spacing:-0.5px;
+            margin-bottom:8px;
+        }
+
+        /* Message */
+        .session-text{
+            font-size:15px;
+            color:#334155;
+            line-height:1.6;
+        }
+        </style>
+
+        <div class="session-popup">
+            <h3 style="color:#991b1b;margin-bottom:10px;">
+            Session Expired
+            </h3>
+            <p>Your session has expired.<br>Please login again.</p>
+        </div>
+        """, unsafe_allow_html=True)
+
+        time.sleep(3)
+
+        st.session_state.authenticated = False
+        st.session_state.login_time = None
+        st.session_state.session_expired = False
+
+        st.query_params.clear()
+
+        st.rerun()
+
+    if not st.session_state.authenticated:
+
+        st.markdown('<div class="login-container">', unsafe_allow_html=True)
+
+        st.markdown("""
+            <div class="header-main">SHOPPER CATEGORY</div>
+            <div class="header-accent">INSIGHT</div>
+            <div class="header-sub">DASHBOARD | TRIAL PHASE 2</div>
+            <br><br>
+        """, unsafe_allow_html=True)
+
+        with st.form("login_form"):
+
+            user = st.text_input(
+                "Username",
+                placeholder="Username",
+                label_visibility="collapsed"
+            )
+
+            pw = st.text_input(
+                "Password",
+                type="password",
+                placeholder="Password",
+                label_visibility="collapsed"
+            )
+
+            login = st.form_submit_button("LOGIN")
+
+            if login:
+                if user == "SAT" and pw == "SAT234":
+
+                    st.session_state.authenticated = True
+                    st.session_state.login_time = time.time()
+
+                    st.query_params["auth"] = "true"
+
+                    st.rerun()
+
+                else:
+                    st.error("username atau password salah.")
+        st.markdown('</div>', unsafe_allow_html=True)
+        st.stop()
+
+# Jalankan Login
+login_page()
 st.markdown("""
 <style>
 /* Kecilkan lebar layout utama */

@@ -800,7 +800,7 @@ def render_affinity_tab(df, col_a, col_b, filter_cols, key_prefix, show_qty_impa
     global df_p 
 
     if df.empty:
-        st.warning("**[Affinity Tidak Tersedia]** : Filter Kembali Section atau Versi Plano")
+        st.warning("**[Affinity Tidak Tersedia]** : Pilih Kembali Section atau Versi Plano")
         return
 
     df = df.copy()

@@ -566,7 +566,7 @@ def render_affinity_tab(df, col_a, col_b, filter_cols, key_prefix, show_qty_impa
     global df_p 
 
     if df.empty:
-        st.warning("PILIH KEMBALI SECTION")
+        st.warning("***[Affinity Tidak Tersedia] : Filter Kembali Section atau Versi Plano***")
         return
 
     df = df.copy()
@@ -584,50 +584,35 @@ def render_affinity_tab(df, col_a, col_b, filter_cols, key_prefix, show_qty_impa
             df[col] = pd.to_numeric(df[col], errors='coerce').fillna(0)
 
     epsilon = 1e-9
-    
     total_trans = None
-
-    # 1️⃣ Jika sudah ada di file affinity
     if 'total_transactions' in df.columns:
         total_trans = df['total_transactions'].iloc[0]
 
-    # 2️⃣ Jika global tersedia
     elif 'total_struk_global' in globals():
         total_trans = total_struk_global
 
-    # 3️⃣ Jika performa punya buyer count
     elif 'BUYER_COUNT_BEFORE' in df_p.columns:
         total_trans = df_p['BUYER_COUNT_BEFORE'].sum()
 
-    # 4️⃣ fallback terakhir (aman agar tidak 0)
     if not total_trans or total_trans <= 0:
         total_trans = df['trans_a'].max() if 'trans_a' in df.columns else 1
-            
-    # Pastikan total_trans tidak nol agar tidak pembagian nol
+
     if total_trans <= 0:
         st.error("Gagal menghitung populasi transaksi (Universe). Periksa sumber data Anda.")
         return
-    # 3. Kalkulasi Metrik MBA (Raw)
+    
     df['measure_support'] = df['trans_ab'] / (total_trans + epsilon)
     df['measure_confidence'] = df['trans_ab'] / (df['trans_a'] + epsilon)
-    
     supp_a = df['trans_a'] / (total_trans + epsilon)
     supp_b = df['trans_b'] / (total_trans + epsilon)
     df['measure_lift'] = df['measure_support'] / ((supp_a * supp_b) + epsilon)
 
-    # 4. Normalisasi (Skala 0-1)
     df['conf_norm'] = df['measure_confidence'].clip(0, 1)
-    
-    # SUPPORT: Hapus Min-Max Scaling! Gunakan persentase asli probabilitas agar skor tidak membengkak
     df['supp_norm'] = df['measure_support'].clip(0, 1)
-    
-    # LIFT: Tetap dinormalisasi (Hanya korelasi positif > 1 yang dihitung)
     df['lift_norm'] = df['measure_lift'].apply(lambda x: (x-1)/4 if x > 1 else 0).clip(0, 1)
-
-    # 5. Weighted Score (Konfigurasi Bobot Anda: 70/25/5)
     df['weighted_score'] = (
-        (df['supp_norm'] * 0.70) + 
-        (df['conf_norm'] * 0.25) + 
+        (df['supp_norm'] * 0.35) + 
+        (df['conf_norm'] * 0.60) + 
         (df['lift_norm'] * 0.05)
     )
 
@@ -1035,12 +1020,18 @@ def normalize_brand_columns(df):
 
 def main():
     global df_p 
-    df_section_source = load_perf_file("category", "V1")
+    # 🔥 Ambil section dari semua versi plano
+    section_set = set()
 
-    if df_section_source.empty or "SECTION" not in df_section_source.columns:
-        sections_only = []
-    else:
-        sections_only = sorted(df_section_source["SECTION"].dropna().unique().tolist())
+    for v in ["V1", "V2", "NOT_TRIAL"]:
+        df_tmp = load_perf_file("category", v)
+        if not df_tmp.empty and "SECTION" in df_tmp.columns:
+            section_set.update(df_tmp["SECTION"].dropna().unique())
+
+    sections_only = sorted(list(section_set))
+
+    # 🔥 Hapus section tidak valid
+    sections_only = [s for s in sections_only if s not in ["UNKNOWN", "-", "NAN", "NONE", ""]]
 
     start_idx = 0
 
@@ -1097,6 +1088,9 @@ def main():
                         )
         # 🔥 Load dataset perf sesuai plano
         df_p = load_perf_file("category", sel_plano)
+
+        # 🔥 Bersihkan section tidak valid
+        df_p = df_p[~df_p["SECTION"].isin(["UNKNOWN", "-", "", "NAN", "NONE"])]
 
         # 🔥 Build section list dari data tersebut
         sections_only = sorted(df_p["SECTION"].dropna().unique().tolist())
@@ -1531,7 +1525,7 @@ def main():
                                 plot_bgcolor='rgba(0,0,0,0)'
                             )
 
-                            st.plotly_chart(fig_overall, use_container_width=True)
+                            st.plotly_chart(fig_overall, use_container_width=True, key=f"overall_{i}")
 
                             st.caption(
                                 f"Switchers: {total_sw:,} | Retained: {total_no:,}"
@@ -1600,7 +1594,7 @@ def main():
                                 plot_bgcolor='rgba(0,0,0,0)'
                             )
 
-                            st.plotly_chart(fig_dest_pie, use_container_width=True)
+                            st.plotly_chart(fig_dest_pie, use_container_width=True, key=f"dest_{i}")
 
                             # 🔥 Insight tambahan otomatis
                             top_row = dest_data.iloc[0]
@@ -1655,7 +1649,7 @@ def main():
                             paper_bgcolor='rgba(0,0,0,0)', plot_bgcolor='rgba(0,0,0,0)',
                             margin=dict(t=20, b=0, l=0, r=0)
                         )
-                        st.plotly_chart(fig_promo, use_container_width=True)
+                        st.plotly_chart(fig_promo, use_container_width=True, key=f"promo_{i}")
                     else:
                         st.info("No promo data available.")
 

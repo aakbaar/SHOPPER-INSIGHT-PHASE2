@@ -1090,7 +1090,11 @@ def main():
     if menu == "📈 PERFORMANCE":
         col_title, col_plano, col_sec = st.columns([5, 2.5, 2.5])
         with col_title: st.title("📈 PERFORMANCE OVERVIEW")
-        with col_plano: sel_plano = st.selectbox("VERSI PLANO", ["V1", "V2"], key="plano_perf")
+        with col_plano: sel_plano = st.selectbox(
+                            "VERSI PLANO",
+                            ["V1", "V2", "NOT_TRIAL"],
+                            key="plano_perf"
+                        )
         # 🔥 Load dataset perf sesuai plano
         df_p = load_perf_file("category", sel_plano)
 

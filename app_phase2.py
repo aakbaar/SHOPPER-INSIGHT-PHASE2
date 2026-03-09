@@ -574,20 +574,19 @@ def render_performance_cards(df, is_category=False):
             if "BUYER_COUNT_AFTER" in df.columns else 0
         )
 
-    # Indikator Growth (Bubble)
     def get_delta_html(val):
         color = "#E8F5E9" if val > 0 else "#FFEBEE"
         t_color = "#2E7D32" if val > 0 else "#C62828"
         icon = "↑" if val > 0 else "↓"
         return f"""<div style="display:inline-block; background-color:{color}; color:{t_color}; 
-                    padding:2px 10px; border-radius:12px; font-size:12px; font-weight:bold; margin-top:0px;">
+                    padding:2px 10px; border-radius:12px; font-size:9px; font-weight:bold; margin-top:0px;">
                     {icon} {val:+.2%}</div>"""
 
     card_style = """
         background-color: #F8F9FA; 
         border-radius: 8px; 
         padding: 12px 14px; 
-        height: 125px; 
+        height: 110px; 
         border: 1px solid #EEE;
         display: flex;
         flex-direction: column;
@@ -606,7 +605,7 @@ def render_performance_cards(df, is_category=False):
             border_color = "#AEE3B2" if gr > 0 else "#E1B7B3"
 
             st.markdown(f"""
-                <div style="{card_style}; border-bottom:4px solid {border_color};">
+                <div style="{card_style}; border-bottom:2px solid {border_color};">
                     <p style="color:#6B7280; font-size:12px; margin:0; font-weight:600;">
                         Transaction Penetration
                     </p>
@@ -614,7 +613,7 @@ def render_performance_cards(df, is_category=False):
                         {metrics['pen_val']:.2%}
                     </div>
                     {get_delta_html(gr)}
-                    <p style="color:#9CA3AF; font-size:11px; margin-top:0px;">
+                    <p style="color:#9CA3AF; font-size:8px; margin-top:0px;">
                         Total Buyers: {metrics['buyer_total']:,}
                     </p>
                 </div>

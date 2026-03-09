@@ -29,7 +29,7 @@ st.markdown("""
     .login-container {
         max-width: 500px;
         margin: auto;
-        padding-top: 0vh;
+        padding-top: 3vh;
         text-align: center;
         font-family: 'Inter', sans-serif;
     }

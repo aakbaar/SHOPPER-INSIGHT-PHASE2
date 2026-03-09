@@ -33,6 +33,14 @@ st.markdown("""
         text-align: center;
         font-family: 'Inter', sans-serif;
     }
+    .block-container {
+        max-width: 1200px !important;
+        padding-top: 3rem !important;
+    }
+
+    .login-container {
+        max-width: 520px;
+    }
 
     /* Header Styling */
     .header-main {

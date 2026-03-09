@@ -586,7 +586,7 @@ def render_performance_cards(df, is_category=False):
         background-color: #F8F9FA; 
         border-radius: 8px; 
         padding: 12px 14px; 
-        height: 110px; 
+        height: 105px; 
         border: 1px solid #EEE;
         display: flex;
         flex-direction: column;
@@ -1312,7 +1312,6 @@ def main():
                             ["V1", "V2", "NOT_TRIAL"],
                             key="plano_perf"
                         )
-        # 🔥 Load dataset perf sesuai plano
         df_p = load_perf_file("category", sel_plano)
 
         # 🔥 Bersihkan section tidak valid
@@ -1321,7 +1320,6 @@ def main():
         # 🔥 Build section list dari data tersebut
         sections_only = sorted(df_p["SECTION"].dropna().unique().tolist())
 
-        # default index section huruf B
         start_idx = next((i for i, s in enumerate(sections_only) if str(s).startswith('B')), 0)
 
         # 🔥 Universe transaksi global
@@ -1337,9 +1335,6 @@ def main():
 
         st.markdown("---")
 
-        # =================================================================
-        # FUNGSI SMART CROSS-FILTERING (AGAR FILTER BISA SALING MENYUSUT)
-        # =================================================================
         def get_dynamic_options(df, col_name, current_selections, filter_dict):
             temp_df = df.copy()
             for k, v in filter_dict.items():

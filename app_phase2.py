@@ -35,7 +35,7 @@ st.markdown("""
     }
     .block-container {
         max-width: 1200px !important;
-        padding-top: 3rem !important;
+        padding-top: 2rem !important;
     }
 
     .login-container {

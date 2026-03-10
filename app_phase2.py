@@ -85,10 +85,10 @@ st.markdown("""
         background-color: #800000 !important; /* Maroon/Deep Red */
         color: white !important;
         border: none !important;
-        padding: 15px 45px !important;
+        padding: 15px 40px !important;
         border-radius: 15px !important;
         font-weight: 500 !important;
-        font-size: 16px !important;
+        font-size: 14px !important;
         box-shadow: 0 10px 25px rgba(128, 0, 0, 0.3) !important;
         transition: all 0.3s ease !important;
         width: auto !important;

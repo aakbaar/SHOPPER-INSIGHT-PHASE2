@@ -59,10 +59,10 @@ st.markdown("""
         letter-spacing: -1px;
     }
     .header-sub {
-        font-size: 15px;
+        font-size: 14px;
         font-weight: 700;
         color: #1e293b;
-        letter-spacing: 3px;
+        letter-spacing: 1px;
         margin-top: 15px;
         text-transform: uppercase;
     }

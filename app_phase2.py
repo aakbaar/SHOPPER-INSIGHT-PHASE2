@@ -87,7 +87,7 @@ st.markdown("""
 
 def login_page():
 
-    SESSION_TIMEOUT = 600
+    SESSION_TIMEOUT = 3600
     # cek apakah session masih valid
     if st.session_state.authenticated and st.session_state.login_time:
         elapsed = time.time() - st.session_state.login_time

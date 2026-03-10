@@ -44,7 +44,7 @@ st.markdown("""
 
     /* Header Styling */
     .header-main {
-        font-size: 48px;
+        font-size: 45px;
         font-weight: 900;
         color: #1e293b;
         line-height: 0.9;
@@ -52,7 +52,7 @@ st.markdown("""
         margin-bottom: 0px;
     }
     .header-accent {
-        font-size: 48px;
+        font-size: 45px;
         font-weight: 900;
         color: #991b1b; /* Deep Red Dashboard */
         line-height: 0.9;

@@ -208,7 +208,7 @@ def login_page():
             login = st.form_submit_button("LOGIN")
 
             if login:
-                if user == "SAT" and pw == "SAT234":
+                if user == "SATsimulasi" and pw == "SAT234":
 
                     st.session_state.authenticated = True
                     st.session_state.login_time = time.time()

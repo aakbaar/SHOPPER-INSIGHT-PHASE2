@@ -448,7 +448,7 @@ def load_loyalty_data():
         return {
             "br_loy_cat": pd.read_csv("BRAND_LOYALTY_CATEGORY_PHASE2.csv"),
             "br_loy_sub": pd.read_csv("BRAND_LOYALTY_SUBCATEGORY_PHASE2.csv"),
-            "br_swi_cat": pd.read_csv("BRAND_SWITCH_CATEGORY_PHASE.csv"),
+            "br_swi_cat": pd.read_csv("BRAND_SWITCH_CATEGORY_PHASE2.csv"),
             "br_swi_sub": pd.read_csv("BRAND_SWITCH_SUBCATEGORY_PHASE2.csv"),
             "cat_loy": pd.read_csv("CATEGORY_LOYALTY_PHASE2.csv"),
             "sub_loy": pd.read_csv("SUBCATEGORY_LOYALTY_PHASE2.csv")

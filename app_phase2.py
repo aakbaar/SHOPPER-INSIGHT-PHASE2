@@ -645,7 +645,7 @@ def display_styled_table(df):
     cols_to_drop = [c for c in df.columns if "PROMO_PCT" in c]
     df = df.drop(columns=cols_to_drop, errors='ignore')
     first_col = df.columns[0]
-    second_col = df.columns[1]
+    second_col = df.columns[1]  
 
     # Gunakan 2 kolom supaya index unik
     df = df.set_index([first_col, second_col])
